@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from '@/pages/Home';
-import CertificatesPage from '@/pages'; // Certifique-se de criar este arquivo em src/pages/
+import CertificatesPage from '@/pages/CertificatesPage';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import ContactPage from '@/pages/ContactPage';
 import ProjectsPage from '@/pages/ProjectsPage';
