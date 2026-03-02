@@ -1,10 +1,12 @@
 import { Moon, Sun, Github, Linkedin } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [active, setActive] = useState<string>('#home');
+  const location = useLocation();
 
   useEffect(() => {
     const updateActive = () => {
@@ -21,14 +23,20 @@ export default function Navbar() {
 
     updateActive();
     window.addEventListener('hashchange', updateActive);
-    // Adiciona listener para mudanças de path (navegação)
-    window.addEventListener('popstate', updateActive);
     
     return () => {
       window.removeEventListener('hashchange', updateActive);
-      window.removeEventListener('popstate', updateActive);
     };
   }, []);
+
+  useEffect(() => {
+    if (location) {
+      if (location.pathname.includes('/certificates')) setActive('/certificates');
+      else if (location.pathname.includes('/contact')) setActive('/contact');
+      else if (location.pathname.includes('/projects')) setActive('/projects');
+      else setActive(location.hash || '#home');
+    }
+  }, [location]);
 
   const linkClass = (target: string) =>
     `px-4 py-1.5 rounded-full transition-all duration-300 text-sm font-medium ${
@@ -42,7 +50,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14 relative">
         
         <div className="flex-shrink-0">
-          <a href="/" className="flex items-center gap-2.5 group">
+          <Link to="/" className="flex items-center gap-2.5 group">
             <img
               src="/lion.svg"
               alt="Logo Leão"
@@ -52,17 +60,17 @@ export default function Navbar() {
             <span className="text-base font-bold tracking-tighter text-slate-900 dark:text-white whitespace-nowrap">
               Francelino&nbsp;Júnior<span className="text-blue-500">.</span>
             </span>
-          </a>
+          </Link>
         </div>
 
         <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-slate-50/50 dark:bg-slate-900/20 p-1 rounded-full border border-slate-100 dark:border-slate-800/50">
           <a href="/#home" className={linkClass('#home')}>Início</a>
           <a href="/#experience" className={linkClass('#experience')}>Experiência</a>
-          <a href="/projects" className={linkClass('/projects')}>Projetos</a>
+          <Link to="/projects" className={linkClass('/projects')}>Projetos</Link>
           
-          <a href="/certificates" className={linkClass('/certificates')}>Certificados</a>
+          <Link to="/certificates" className={linkClass('/certificates')}>Certificados</Link>
           
-          <a href="/contact" className={linkClass('/contact')}>Contato</a>
+          <Link to="/contact" className={linkClass('/contact')}>Contato</Link>
         </div>
 
         {/* Redes Sociais e Tema */}

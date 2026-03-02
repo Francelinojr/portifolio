@@ -171,7 +171,7 @@ export default function Hero() {
       </motion.div>
 
       <motion.div
-        className="absolute bottom-6 inset-x-0 flex flex-col items-center"
+        className="absolute bottom-8 inset-x-0 flex flex-col items-center"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
