@@ -40,6 +40,9 @@ export default function Experience() {
                   alt={`Logo ${exp.company}`} 
                   className="w-full h-full object-contain"
                   loading="lazy"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/lion.svg';
+                  }}
                 />
               </div>
             </div>
