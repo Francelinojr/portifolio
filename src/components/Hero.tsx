@@ -1,15 +1,8 @@
 import { ExternalLink, ArrowUpRight, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, memo } from 'react';
 
-export default function Hero() {
-  const phrases = useMemo(
-    () => [
-      'Desenvolvedor Júnior • Cientista de Dados • Analista de Dados',
-      'Estudante de Ciência de Dados e IA',
-    ],
-    []
-  );
+const TypingLine = memo(function TypingLine({ phrases }: { phrases: string[] }) {
   const [displayText, setDisplayText] = useState('');
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [typing, setTyping] = useState(true);
@@ -56,6 +49,23 @@ export default function Hero() {
       if (typingIntervalRef.current) window.clearInterval(typingIntervalRef.current);
     };
   }, [typing, phraseIndex, phrases]);
+
+  return (
+    <>
+      <span className="align-middle">{displayText}</span>
+      <span className="ml-1 inline-block w-[7px] h-4 align-middle bg-blue-600 dark:bg-blue-400 animate-pulse rounded-sm" />
+    </>
+  );
+});
+
+export default function Hero() {
+  const phrases = useMemo(
+    () => [
+      'Desenvolvedor Júnior • Cientista de Dados • Analista de Dados',
+      'Estudante de Ciência de Dados e IA',
+    ],
+    []
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -117,11 +127,10 @@ export default function Hero() {
         </motion.h1>
 
         <motion.p
-          className="text-lg md:text-xl text-blue-600 dark:text-blue-400 font-semibold mb-5 text-center w-full max-w-xl mx-auto min-h-[28px]"
+          className="text-lg md:text-xl text-blue-600 dark:text-blue-400 font-semibold mb-5 text-center w-full max-w-xl mx-auto min-h-[24px]"
           variants={itemVariants}
         >
-          <span className="align-middle">{displayText}</span>
-          <span className="ml-1 inline-block w-[7px] h-4 align-middle bg-blue-600 dark:bg-blue-400 animate-pulse rounded-sm" />
+          <TypingLine phrases={phrases} />
         </motion.p>
 
         <motion.div
