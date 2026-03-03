@@ -1,37 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Star, GitBranch } from 'lucide-react';
-
-interface Repo {
-  id: number;
-  name: string;
-  html_url: string;
-  description: string | null;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-  updated_at: string;
-}
+import { useGithubRepos } from '@/hooks/useGithubRepos';
 
 export default function GithubProjects() {
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { repos, loading } = useGithubRepos('Francelinojr', 12);
 
-  useEffect(() => {
-    fetch('https://api.github.com/users/Francelinojr/repos?per_page=12&sort=updated')
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setRepos(
-            data
-              .filter((r) => !r.fork)
-              .sort((a, b) => b.stargazers_count - a.stargazers_count)
-              .slice(0, 8)
-          );
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  const topRepos = useMemo(() => {
+    if (!repos) return [];
+    return [...repos]
+      .sort((a, b) => b.stargazers_count - a.stargazers_count)
+      .slice(0, 8);
+  }, [repos]);
 
   return (
     <section id="notebooks" className="py-20 px-4 bg-white dark:bg-slate-950">
@@ -61,7 +41,7 @@ export default function GithubProjects() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            {repos.map((repo) => (
+            {topRepos.map((repo) => (
               <a
                 key={repo.id}
                 href={repo.html_url}

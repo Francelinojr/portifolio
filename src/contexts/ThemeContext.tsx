@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -26,21 +26,14 @@ export function ThemeProvider({ children, defaultTheme = 'light' as Theme }: { c
     }
     try {
       window.localStorage.setItem('theme', theme);
-    } catch {}
+    } catch { /* empty */ }
   }, [theme]);
 
-  const toggleTheme = () => {
-    const root = document.documentElement;
-    root.classList.toggle('dark');
-    const isDark = root.classList.contains('dark');
-    const next: Theme = isDark ? 'dark' : 'light';
-    try {
-      window.localStorage.setItem('theme', next);
-    } catch {}
-    setTheme(next);
-  };
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
 
-  const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
+  const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
+import Navbar from '@/components/ui/Navbar';
+import Hero from '@/components/ui/Hero';
 import TechStack from '@/components/TechStack';
 import Projects from '@/components/Projects';
 import Experience from '@/components/Experience';
-import Footer from '@/components/Footer';
+import Footer from '@/components/ui/Footer';
 
 export default function Home() {
   useEffect(() => {

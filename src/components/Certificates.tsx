@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, ExternalLink, Clock, BookOpen, School } from 'lucide-react';
+import { Certificate } from '@/types';
 
-const certificates = [
+const certificates: Certificate[] = [
   {
     title: "JP TECH: Capacitação para o Futuro Figital",
     org: "UFPB / PROEX",
@@ -178,20 +179,20 @@ export default function Certificates() {
 
   // Categorias únicas baseadas na referência
   const categories = ['Todos', 'Acadêmico', 'Evento', 'Ferramentas', 'Hardware', 'IA', 'Programação'];
-  
+
   const stats = useMemo(() => ({
     total: certificates.length,
     institutions: new Set(certificates.map(c => c.org)).size
   }), []);
 
-  const filteredCerts = useMemo(() => 
+  const filteredCerts = useMemo(() =>
     filter === 'Todos' ? certificates : certificates.filter(c => c.category === filter)
-  , [filter]);
+    , [filter]);
 
   return (
     <section id="certificates" className="py-20 bg-white dark:bg-[#030712] transition-colors scroll-mt-24">
       <div className="max-w-6xl mx-auto px-4">
-        
+
         {/* Dashboard de Estatísticas */}
         <div className="mb-12">
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4 border-l-4 border-blue-600 pl-4">
@@ -228,11 +229,10 @@ export default function Certificates() {
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
-                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
-                  filter === cat 
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' 
-                  : 'text-slate-500 hover:bg-white dark:hover:bg-slate-800'
-                }`}
+                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${filter === cat
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
+                    : 'text-slate-500 hover:bg-white dark:hover:bg-slate-800'
+                  }`}
               >
                 {cat} {cat === 'Todos' ? `(${stats.total})` : ''}
               </button>
@@ -264,7 +264,7 @@ export default function Certificates() {
                       <Clock size={12} className="text-blue-500" /> {cert.hours}
                     </div>
                   </div>
-                  
+
                   <div className="mb-4">
                     <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-blue-600 transition-colors leading-tight">
                       {cert.title}

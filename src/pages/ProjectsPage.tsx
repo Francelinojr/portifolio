@@ -1,6 +1,6 @@
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/ui/Navbar';
 import Projects from '@/components/Projects';
-import Footer from '@/components/Footer';
+import Footer from '@/components/ui/Footer';
 
 export default function ProjectsPage() {
   return (
