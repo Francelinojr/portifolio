@@ -15,7 +15,7 @@ export default function Contact() {
 
       await emailjs.sendForm(
         'service_za9dhfz', // Service ID
-        'template_fbzrrd7', // Template ID
+        'template_lc2brf9', // Template ID
         formRef.current,
         '6YGEOYBIfhJqpR9pj' // Public Key
       );
@@ -25,7 +25,6 @@ export default function Contact() {
       setTimeout(() => setStatus("idle"), 5000);
     } catch (error: any) {
       console.error(error);
-      alert(`Erro EmailJS: ${error?.text || error?.message || JSON.stringify(error)}`);
       setStatus("error");
     }
   };
