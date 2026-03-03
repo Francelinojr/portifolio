@@ -14,7 +14,7 @@ export default function Contact() {
       if (!formRef.current) return;
 
       await emailjs.sendForm(
-        'service_y7lek5l', // Service ID
+        'service_g7sseot', // Service ID (Gmail)
         'template_cz4rkip', // Template ID
         formRef.current,
         '6YGEOYBIfhJqpR9pj' // Public Key
@@ -23,8 +23,9 @@ export default function Contact() {
       setStatus("success");
       formRef.current.reset();
       setTimeout(() => setStatus("idle"), 5000);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      alert(`Erro EmailJS: ${error?.text || error?.message || JSON.stringify(error)}`);
       setStatus("error");
     }
   };
