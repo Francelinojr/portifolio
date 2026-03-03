@@ -1,31 +1,30 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Github, Linkedin, Mail, Phone, Send, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 export default function Contact() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("submitting");
-    const form = e.currentTarget;
-    const data = new FormData(form);
 
     try {
-      const response = await fetch("https://formspree.io/f/xgoljygl", {
-        method: "POST",
-        body: data,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
-      if (response.ok) {
-        setStatus("success");
-        form.reset();
-        setTimeout(() => setStatus("idle"), 5000);
-      } else {
-        setStatus("error");
-      }
+      if (!formRef.current) return;
+
+      await emailjs.sendForm(
+        'service_y7lek5l', // Service ID
+        'template_cz4rkip', // Template ID
+        formRef.current,
+        '6YGEOYBIfhJqpR9pj' // Public Key
+      );
+
+      setStatus("success");
+      formRef.current.reset();
+      setTimeout(() => setStatus("idle"), 5000);
     } catch (error) {
+      console.error(error);
       setStatus("error");
     }
   };
@@ -107,7 +106,7 @@ export default function Contact() {
             <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-6">
               Enviar mensagem
             </h3>
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form ref={formRef} className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Seu nome</label>
                 <input type="text" name="name" required placeholder="Como posso te chamar?"
