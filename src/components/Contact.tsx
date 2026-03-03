@@ -14,8 +14,8 @@ export default function Contact() {
       if (!formRef.current) return;
 
       await emailjs.sendForm(
-        'service_g7sseot', // Service ID (Gmail)
-        'template_cz4rkip', // Template ID
+        'service_j5nican', // Service ID
+        'template_fbzrrd7', // Template ID
         formRef.current,
         '6YGEOYBIfhJqpR9pj' // Public Key
       );
