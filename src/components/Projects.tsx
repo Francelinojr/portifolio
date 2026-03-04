@@ -161,92 +161,116 @@ export default function Projects({ variant = 'compact' as 'compact' | 'full' }) 
           )}
         </div>
 
-        <motion.div
-          className={`grid grid-cols-1 ${variant === 'full' ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-3'} gap-6`}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewport}
-          variants={sectionContainer}
-        >
-          {filtered.map((p) => (
-            <motion.div
-              key={p.title}
-              variants={cardVariant}
-              whileHover={hoverLift}
-              whileTap={tapScale}
-              className="group grad-border-dark flex flex-col relative"
-            >
-              {/* Inner card with glass effect */}
-              <div className="glass-card flex flex-col flex-grow h-full">
-                <div className={`relative ${variant === 'compact' ? 'h-36' : 'h-44'} overflow-hidden bg-slate-100 dark:bg-slate-800`}>
-                  {/* ── Picture element: AVIF → WebP → JPEG fallback ────────────────────────
-                       width/height explícitos são obrigatórios para CLS = 0.      */}
-                  <picture>
-                    {projectAVIF[p.title] && (
-                      <source srcSet={projectAVIF[p.title]} type="image/avif" />
-                    )}
-                    {projectWebP[p.title] && (
-                      <source srcSet={projectWebP[p.title]} type="image/webp" />
-                    )}
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      width={400}
-                      height={variant === 'compact' ? 144 : 176}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onError={handleImageError}
-                    />
-                  </picture>
-                  {/* Light overlay on hover — subtle gradient in dark mode */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                    <div className="p-2 bg-white/90 dark:bg-slate-900/70 backdrop-blur-sm rounded-full text-slate-900 dark:text-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      <Github size={18} />
-                    </div>
-                  </div>
-                  {/* Top-right glow badge in dark mode */}
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="hidden dark:flex items-center gap-1 px-2 py-0.5 bg-blue-600/80 backdrop-blur-sm text-white text-[9px] font-bold rounded-full">
-                      GitHub
-                    </span>
-                  </div>
+        {/* ── Loading skeleton ─────────────────────────────────────────── */}
+        {loading && variant === 'full' && (
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 animate-pulse">
+                <div className="h-44 bg-slate-200 dark:bg-slate-800" />
+                <div className="p-4 space-y-2">
+                  <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/3" />
+                  <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded w-full" />
+                  <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded w-4/5" />
                 </div>
-
-                <div className="p-4 flex flex-col flex-grow">
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1.5 line-clamp-1">
-                    {p.title}
-                  </h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-xs mb-3 line-clamp-3 flex-grow italic">
-                    {p.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {p.tags.slice(0, 3).map((t) => (
-                      <span
-                        key={t}
-                        className="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 dark:border dark:border-blue-800/40 text-blue-600 dark:text-blue-400 text-[9px] font-bold uppercase tracking-wider rounded-full"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                    <span className="ml-auto px-2.5 py-1 bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 text-[9px] rounded-full">
-                      {p.complexity}
-                    </span>
-                  </div>
-                </div>
-
-                <a
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute inset-0 z-10"
-                  aria-label={`Ver projeto ${p.title}`}
-                />
               </div>
-            </motion.div>
-          ))}
-        </motion.div>
+            ))}
+          </div>
+        )}
+
+        {/* ── Project grid ────────────────────────────────────────────────── */}
+        {!loading && (
+          <motion.div
+            className={`grid grid-cols-1 ${variant === 'full' ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-3'} gap-6`}
+            initial="hidden"
+            animate="visible"
+            variants={sectionContainer}
+          >
+            {filtered.length === 0 ? (
+              <div className="col-span-3 py-20 text-center text-slate-400 dark:text-slate-500">
+                <p className="text-sm">Nenhum projeto encontrado para este filtro.</p>
+              </div>
+            ) : (
+              filtered.map((p) => (
+                <motion.div
+                  key={p.title}
+                  variants={cardVariant}
+                  whileHover={hoverLift}
+                  whileTap={tapScale}
+                  className="group grad-border-dark flex flex-col relative"
+                >
+                  {/* Inner card with glass effect */}
+                  <div className="glass-card flex flex-col flex-grow h-full">
+                    <div className={`relative ${variant === 'compact' ? 'h-36' : 'h-44'} overflow-hidden bg-slate-100 dark:bg-slate-800`}>
+                      {/* ── Picture element: AVIF → WebP → JPEG fallback ────────────────────────
+                         width/height explícitos são obrigatórios para CLS = 0.      */}
+                      <picture>
+                        {projectAVIF[p.title] && (
+                          <source srcSet={projectAVIF[p.title]} type="image/avif" />
+                        )}
+                        {projectWebP[p.title] && (
+                          <source srcSet={projectWebP[p.title]} type="image/webp" />
+                        )}
+                        <img
+                          src={p.image}
+                          alt={p.title}
+                          width={400}
+                          height={variant === 'compact' ? 144 : 176}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={handleImageError}
+                        />
+                      </picture>
+                      {/* Light overlay on hover — subtle gradient in dark mode */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+                        <div className="p-2 bg-white/90 dark:bg-slate-900/70 backdrop-blur-sm rounded-full text-slate-900 dark:text-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <Github size={18} />
+                        </div>
+                      </div>
+                      {/* Top-right glow badge in dark mode */}
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span className="hidden dark:flex items-center gap-1 px-2 py-0.5 bg-blue-600/80 backdrop-blur-sm text-white text-[9px] font-bold rounded-full">
+                          GitHub
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-4 flex flex-col flex-grow">
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-1.5 line-clamp-1">
+                        {p.title}
+                      </h3>
+                      <p className="text-slate-600 dark:text-slate-400 text-xs mb-3 line-clamp-3 flex-grow italic">
+                        {p.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 mt-auto">
+                        {p.tags.slice(0, 3).map((t) => (
+                          <span
+                            key={t}
+                            className="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 dark:border dark:border-blue-800/40 text-blue-600 dark:text-blue-400 text-[9px] font-bold uppercase tracking-wider rounded-full"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                        <span className="ml-auto px-2.5 py-1 bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 text-[9px] rounded-full">
+                          {p.complexity}
+                        </span>
+                      </div>
+                    </div>
+
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 z-10"
+                      aria-label={`Ver projeto ${p.title}`}
+                    />
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </motion.div>
+        )}
       </div>
     </section>
   );
