@@ -5,12 +5,25 @@ import { cardVariant, sectionContainer, viewport, hoverLift, tapScale } from '@/
 
 import { Project } from '@/types';
 
-// Mapeamento centralizado de imagens de projetos
+// Mapeamento centralizado de imagens de projetos (formatos modernos primeiro)
 const projectImages: Record<string, string> = {
   'Breast-Cancer-Wisconsin-Diagnostic-': '/projects/breast-cancer.jpg',
-  'Costura-App': '/projects/costura.jpg',
+  'Costura-App': '/projects/Costura.jpg',
   'Geografia-da-Desigualdade': '/projects/desigualdade.jpg',
   'default': '/assets/default-project.jpg'
+};
+
+// Fontes WebP/AVIF correspondentes (melhor compressão)
+const projectWebP: Record<string, string> = {
+  'Breast-Cancer-Wisconsin-Diagnostic-': '/projects/breast-cancer.webp',
+  'Costura-App': '/projects/Costura.webp',
+  'default': ''
+};
+
+const projectAVIF: Record<string, string> = {
+  'Breast-Cancer-Wisconsin-Diagnostic-': '/projects/breast-cancer.avif',
+  'Costura-App': '/projects/Costura.avif',
+  'default': ''
 };
 
 const fallback: Project[] = [
@@ -166,12 +179,26 @@ export default function Projects({ variant = 'compact' as 'compact' | 'full' }) 
               {/* Inner card with glass effect */}
               <div className="glass-card flex flex-col flex-grow h-full">
                 <div className={`relative ${variant === 'compact' ? 'h-36' : 'h-44'} overflow-hidden bg-slate-100 dark:bg-slate-800`}>
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onError={handleImageError}
-                  />
+                  {/* ── Picture element: AVIF → WebP → JPEG fallback ────────────────────────
+                       width/height explícitos são obrigatórios para CLS = 0.      */}
+                  <picture>
+                    {projectAVIF[p.title] && (
+                      <source srcSet={projectAVIF[p.title]} type="image/avif" />
+                    )}
+                    {projectWebP[p.title] && (
+                      <source srcSet={projectWebP[p.title]} type="image/webp" />
+                    )}
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      width={400}
+                      height={variant === 'compact' ? 144 : 176}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={handleImageError}
+                    />
+                  </picture>
                   {/* Light overlay on hover — subtle gradient in dark mode */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
                     <div className="p-2 bg-white/90 dark:bg-slate-900/70 backdrop-blur-sm rounded-full text-slate-900 dark:text-white shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">

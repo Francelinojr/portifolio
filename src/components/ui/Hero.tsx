@@ -106,11 +106,24 @@ export default function Hero() {
       >
         <motion.div className="relative mb-8" variants={imageVariants}>
           <div className="w-32 h-32 rounded-full border-4 border-slate-100 dark:border-slate-800 overflow-hidden shadow-2xl hover:shadow-blue-500/20 transition-shadow duration-300">
-            <img
-              src="/assets/profile.png"
-              alt="Francelino Teotonio Júnior"
-              className="w-full h-full object-cover"
-            />
+            {/* ── Imagem de perfil com formatos modernos ──────────────────────────────
+                 AVIF → WebP → PNG (fallback). fetchpriority="high" instrui o
+                 navegador a buscar essa imagem na primeira ronda de preload, antes
+                 do CSS/JS, eliminando qualquer delay no FCP.                      */}
+            <picture>
+              <source srcSet="/assets/profile.avif" type="image/avif" />
+              <source srcSet="/assets/profile.webp" type="image/webp" />
+              <img
+                src="/assets/profile.png"
+                alt="Francelino Teotônio Júnior"
+                width={128}
+                height={128}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+                className="w-full h-full object-cover"
+              />
+            </picture>
           </div>
           <motion.span
             className="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-4 border-white dark:border-slate-950 rounded-full shadow-lg"
