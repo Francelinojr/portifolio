@@ -169,14 +169,14 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          className="flex flex-col sm:flex-row gap-3.5 justify-center"
+          className="flex flex-col sm:flex-row gap-4 justify-center"
           variants={itemVariants}
         >
           <a
             href="/curriculo.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-md hover:shadow-blue-500/20 hover:scale-105 active:scale-95"
+            className="flex items-center justify-center gap-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-md hover:shadow-blue-500/20 hover:scale-105 active:scale-95"
             title="Abrir currículo em PDF"
           >
             <ArrowUpRight size={18} />
@@ -184,7 +184,7 @@ export default function Hero() {
           </a>
           <a
             href="#projects"
-            className="flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
+            className="flex items-center justify-center gap-2 min-h-[44px] bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
           >
             <ExternalLink size={18} />
             Ver Projetos
@@ -193,12 +193,12 @@ export default function Hero() {
       </motion.div>
 
       <motion.div
-        className="absolute bottom-8 inset-x-0 flex flex-col items-center"
+        className="absolute bottom-8 inset-x-0 hidden md:flex flex-col items-center"
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="text-slate-400 dark:text-slate-600 text-[10px] font-black uppercase tracking-widest mt-12 text-center">Scroll para explorar</div>
-        <ChevronDown size={18} className="mt-3 text-slate-400 dark:text-slate-600" />
+        <div className="text-slate-500 dark:text-slate-500 text-[10px] font-black uppercase tracking-widest mt-12 text-center">Scroll para explorar</div>
+        <ChevronDown size={18} className="mt-3 text-slate-500 dark:text-slate-500" />
       </motion.div>
     </section>
   );

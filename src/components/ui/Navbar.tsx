@@ -69,8 +69,9 @@ const Navbar = memo(function Navbar() {
               href="https://www.linkedin.com/in/francelino-j%C3%BAnior/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2.5 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="LinkedIn"
+              aria-label="Perfil do LinkedIn de Francelino Júnior"
             >
               <Linkedin size={18} />
             </a>
@@ -78,8 +79,9 @@ const Navbar = memo(function Navbar() {
               href="https://github.com/Francelinojr"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2.5 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="GitHub"
+              aria-label="Perfil do GitHub de Francelino Júnior"
             >
               <Github size={18} />
             </a>

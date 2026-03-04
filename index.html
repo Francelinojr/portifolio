@@ -58,10 +58,21 @@
       fetchpriority="high"
     />
 
-    <!-- ═══ Fonts ═══ -->
+    <!-- ═══ Fonts — non-blocking (media=print trick) ═══
+         O browser baixa o CSS de fontes como "print" (não-bloqueante),
+         e o onload troca para "all", aplicando as fontes sem atrasar FCP/LCP.
+         O <noscript> garante fallback quando JS está desativado.          -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
+    </noscript>
 
     <!-- ═══ JSON-LD: Person ═══
          Identifica o perfil como Data Scientist + Software Engineer de João Pessoa,

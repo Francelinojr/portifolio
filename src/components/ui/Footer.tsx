@@ -76,12 +76,12 @@ const Footer = memo(function Footer() {
 
         {/* Rodapé Inferior */}
         <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-400 text-[9px] font-medium tracking-wide">
+          <p className="text-slate-500 text-[9px] font-medium tracking-wide">
             © {year} FRANCELINO JÚNIOR. TODOS OS DIREITOS RESERVADOS.
           </p>
 
           <div className="flex items-center gap-4">
-            <p className="text-slate-400 text-[9px] font-medium tracking-wide">
+            <p className="text-slate-500 text-[9px] font-medium tracking-wide">
               FEITO COM REACT + TAILWIND CSS
             </p>
             <button
