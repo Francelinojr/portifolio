@@ -3,7 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Award, ExternalLink, Clock, BookOpen, School } from 'lucide-react';
 import { Certificate } from '@/types';
 
-const certificates: Certificate[] = [
+/** Mapa de meses em pt-BR para número (0-indexed) */
+const MONTHS: Record<string, number> = {
+  Jan: 0, Fev: 1, Mar: 2, Abr: 3, Mai: 4, Jun: 5,
+  Jul: 6, Ago: 7, Set: 8, Out: 9, Nov: 10, Dez: 11,
+};
+
+/** Converte "Mes Ano" → timestamp para ordenação */
+function parseCertDate(dateStr: string): number {
+  const parts = dateStr.trim().split(' ');
+  const mon = parts[0];
+  const year = parseInt(parts[1] ?? '2000', 10);
+  return new Date(year, MONTHS[mon] ?? 0).getTime();
+}
+
+const RAW_CERTIFICATES: Certificate[] = [
   {
     title: "JP TECH: Capacitação para o Futuro Figital",
     org: "UFPB / PROEX",
@@ -179,22 +193,45 @@ const certificates: Certificate[] = [
     hours: "200h",
     category: "Hardware",
     pdf: "/Certificados/Instalador_e_Reparador_de_Redes_de_Computadores-Certificado_digital_4677642.pdf",
-  },];
+  },
+];
+
+/** Certificados ordenados do mais recente para o mais antigo */
+const certificates: Certificate[] = [...RAW_CERTIFICATES].sort(
+  (a, b) => parseCertDate(b.date) - parseCertDate(a.date)
+);
+
+/** Ano atual para badge "Novo" */
+const CURRENT_YEAR = new Date().getFullYear();
+
+function isNew(date: string): boolean {
+  const year = parseInt(date.trim().split(' ')[1] ?? '0', 10);
+  return year >= CURRENT_YEAR;
+}
 
 export default function Certificates() {
   const [filter, setFilter] = useState('Todos');
 
-  // Categorias únicas baseadas na referência
   const categories = ['Todos', 'Acadêmico', 'Evento', 'Ferramentas', 'Hardware', 'IA', 'Programação'];
+
+  /** Contagem por categoria */
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { Todos: certificates.length };
+    for (const cert of certificates) {
+      counts[cert.category] = (counts[cert.category] ?? 0) + 1;
+    }
+    return counts;
+  }, []);
 
   const stats = useMemo(() => ({
     total: certificates.length,
-    institutions: new Set(certificates.map(c => c.org)).size
+    institutions: new Set(certificates.map(c => c.org)).size,
   }), []);
 
   const filteredCerts = useMemo(() =>
-    filter === 'Todos' ? certificates : certificates.filter(c => c.category === filter)
-    , [filter]);
+    filter === 'Todos' ? certificates : certificates.filter(c => c.category === filter),
+    [filter]
+  );
 
   return (
     <section id="certificates" className="py-20 bg-white dark:bg-[#030712] transition-colors scroll-mt-24">
@@ -230,24 +267,25 @@ export default function Certificates() {
             </div>
           </div>
 
-          {/* Filtros de Categoria */}
+          {/* Filtros de Categoria com contagem */}
           <div className="flex flex-wrap gap-2 bg-slate-50/50 dark:bg-slate-900/20 p-2 rounded-2xl border border-slate-100 dark:border-slate-800/50">
             {categories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
-                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${filter === cat
+                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  filter === cat
                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
                     : 'text-slate-500 hover:bg-white dark:hover:bg-slate-800'
-                  }`}
+                }`}
               >
-                {cat} {cat === 'Todos' ? `(${stats.total})` : ''}
+                {cat} {categoryCounts[cat] !== undefined ? `(${categoryCounts[cat]})` : ''}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Grade de Certificados Personalizada */}
+        {/* Grade de Certificados */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <AnimatePresence mode='popLayout'>
             {filteredCerts.map((cert) => (
@@ -267,8 +305,16 @@ export default function Certificates() {
                     <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl group-hover:bg-blue-600 transition-colors shadow-inner">
                       <Award size={24} className="text-blue-600 group-hover:text-white" />
                     </div>
-                    <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-100 dark:border-slate-800">
-                      <Clock size={12} className="text-blue-500" /> {cert.hours}
+                    <div className="flex items-center gap-2">
+                      {/* Badge "Novo" para certificados do ano atual */}
+                      {isNew(cert.date) && (
+                        <span className="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-100 dark:border-emerald-800/50">
+                          Novo
+                        </span>
+                      )}
+                      <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-100 dark:border-slate-800">
+                        <Clock size={12} className="text-blue-500" /> {cert.hours}
+                      </div>
                     </div>
                   </div>
 
@@ -288,7 +334,7 @@ export default function Certificates() {
 
                 <div className="flex justify-between items-center mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/50">
                   <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{cert.date}</span>
-                  <div className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-tight group-hover:translate-x-1 transition-transform">
+                  <div className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-tight group-hover:-translate-x-1 transition-transform">
                     ABRIR PDF <ExternalLink size={14} />
                   </div>
                 </div>
