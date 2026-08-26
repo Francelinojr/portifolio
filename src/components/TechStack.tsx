@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Code2, Brain, Database, Cloud, BarChart3 } from 'lucide-react';
+import { Code2, Brain, Database, Cloud, BarChart3, Globe } from 'lucide-react';
 import * as SI from 'simple-icons';
 import {
   sectionContainer,
@@ -13,14 +13,18 @@ import {
 /** Shared icon lookup — module-level so it's never rebuilt on re-render. */
 const ICON_MAP: Record<string, { path: string; hex: string }> = {
   'Python': SI.siPython,
-  'SQL': SI.siPostgresql,
+  'TypeScript': SI.siTypescript,
   'JavaScript': SI.siJavascript,
+  'SQL': SI.siPostgresql,
   'Dart': SI.siDart,
   'HTML5': SI.siHtml5,
   'C/C++': SI.siCplusplus,
   'Pandas': SI.siPandas,
   'NumPy': SI.siNumpy,
   'Scikit-learn': SI.siScikitlearn,
+  'React': SI.siReact,
+  'Flutter': SI.siFlutter,
+  'Tailwind CSS': SI.siTailwindcss,
   'PostgreSQL': SI.siPostgresql,
   'MySQL': SI.siMysql,
   'MongoDB': SI.siMongodb,
@@ -44,7 +48,7 @@ const TechIcon = ({ name }: { name: string }) => {
       width="16"
       height="16"
       fill={`#${icon.hex}`}
-      className="mr-2"
+      className="mr-2 flex-shrink-0"
     >
       <path d={icon.path} />
     </svg>
@@ -55,28 +59,33 @@ const techCategories = [
   {
     title: 'Linguagens',
     icon: <Code2 size={16} className="text-blue-600" />,
-    items: ['Python ', 'SQL ', 'JavaScript', 'Dart', 'HTML5', 'C/C++']
+    items: ['Python', 'TypeScript', 'JavaScript', 'SQL', 'Dart', 'HTML5', 'C/C++'],
   },
   {
     title: 'Ciência de Dados',
     icon: <BarChart3 size={16} className="text-blue-600" />,
-    items: ['Pandas', 'NumPy', 'Scikit-learn']
+    items: ['Pandas', 'NumPy', 'Scikit-learn'],
   },
   {
     title: 'Machine Learning',
     icon: <Brain size={16} className="text-blue-600" />,
-    items: ['Modelagem Preditiva', 'SVM', 'Redes Neurais']
+    items: ['Modelagem Preditiva', 'SVM', 'Redes Neurais'],
   },
   {
     title: 'Banco de Dados',
     icon: <Database size={16} className="text-blue-600" />,
-    items: ['PostgreSQL', 'MySQL', 'MongoDB']
+    items: ['PostgreSQL', 'MySQL', 'MongoDB'],
   },
   {
-    title: 'Cloud & Ferramentas',
+    title: 'Frameworks & UI',
+    icon: <Globe size={16} className="text-blue-600" />,
+    items: ['React', 'Flutter', 'FastAPI', 'Flask', 'Django', 'Tailwind CSS'],
+  },
+  {
+    title: 'Cloud & DevOps',
     icon: <Cloud size={16} className="text-blue-600" />,
-    items: ['Git', 'GitHub', 'Docker', 'AWS (EC2, S3, Lambda)', 'FastAPI']
-  }
+    items: ['Git', 'GitHub', 'Docker', 'AWS (EC2, S3, Lambda)'],
+  },
 ];
 
 export default function TechStack() {
