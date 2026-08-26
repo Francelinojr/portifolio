@@ -35,6 +35,7 @@ export default function Contact() {
       setTimeout(() => setStatus("idle"), 5000);
     } catch {
       setStatus("error");
+      setTimeout(() => setStatus("idle"), 6000);
     }
   };
 
@@ -43,19 +44,19 @@ export default function Contact() {
       href: "https://github.com/Francelinojr",
       label: "GitHub",
       handle: "Francelinojr",
-      icon: <Github size={24} className="text-blue-600 group-hover:text-white" />,
+      icon: <Github size={22} className="text-blue-600 group-hover:text-white" />,
     },
     {
-      href: "https://www.linkedin.com/in/francelino-júnior/",
+      href: "https://www.linkedin.com/in/francelino-j%C3%BAnior/",
       label: "LinkedIn",
       handle: "francelino-júnior",
-      icon: <Linkedin size={24} className="text-blue-600 group-hover:text-white" />,
+      icon: <Linkedin size={22} className="text-blue-600 group-hover:text-white" />,
     },
     {
-      href: "tel:81979018226",
-      label: "Telefone / WhatsApp",
+      href: "https://wa.me/5581979018226",
+      label: "WhatsApp / Celular",
       handle: "(81) 97901-8226",
-      icon: <Phone size={24} className="text-blue-600 group-hover:text-white" />,
+      icon: <Phone size={22} className="text-blue-600 group-hover:text-white" />,
     },
   ];
 
@@ -91,9 +92,9 @@ export default function Contact() {
           >
             <motion.h3
               variants={staggerItem}
-              className="text-sm font-black uppercase tracking-widest text-slate-400 mb-6"
+              className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6"
             >
-              Redes Sociais
+              Canais Diretos
             </motion.h3>
 
             <div className="grid gap-4">
@@ -101,14 +102,14 @@ export default function Contact() {
                 <motion.a
                   key={label}
                   href={href}
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   variants={slideLeft}
                   whileHover={hoverLift}
                   whileTap={tapScale}
-                  className="flex items-center gap-4 p-5 glass-social hover:border-blue-500/60 transition-colors group"
+                  className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 hover:border-blue-500/60 transition-colors group shadow-sm"
                 >
-                  <div className="p-3 bg-white dark:bg-slate-800/80 rounded-xl shadow-sm group-hover:bg-blue-600 transition-colors">
+                  <div className="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm group-hover:bg-blue-600 transition-colors">
                     {icon}
                   </div>
                   <div>
@@ -118,13 +119,13 @@ export default function Contact() {
                 </motion.a>
               ))}
 
-              {/* E-mail block — static (two emails) */}
+              {/* E-mail block */}
               <motion.div
                 variants={slideLeft}
-                className="flex items-center gap-4 p-5 glass-social"
+                className="flex items-center gap-4 p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800 shadow-sm"
               >
-                <div className="p-3 bg-white dark:bg-slate-800/80 rounded-xl shadow-sm">
-                  <Mail size={24} className="text-blue-600" />
+                <div className="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
+                  <Mail size={22} className="text-blue-600" />
                 </div>
                 <div className="overflow-hidden">
                   <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">E-mail</span>
@@ -135,33 +136,33 @@ export default function Contact() {
             </div>
           </motion.div>
 
-          {/* Form — slide up */}
+          {/* Form */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={viewport}
             variants={fadeUp}
-            className="grad-border-dark"
+            className="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/30 p-8 shadow-sm"
           >
-            <div className="glass-form p-8">
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-6">
-                Enviar mensagem
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">
+                Enviar Mensagem
               </h3>
               <form ref={formRef} className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Seu nome</label>
                   <input type="text" name="name" required placeholder="Como posso te chamar?"
-                    className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/15 transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600" />
+                    className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/15 transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 text-sm" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Seu e-mail</label>
                   <input type="email" name="email" required placeholder="nome@email.com"
-                    className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/15 transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600" />
+                    className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/15 transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 text-sm" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Mensagem</label>
                   <textarea rows={4} name="message" required placeholder="Escreva sua mensagem aqui..."
-                    className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/15 transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 resize-none"></textarea>
+                    className="w-full px-5 py-4 rounded-2xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-slate-700/50 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/15 transition-all outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 resize-none text-sm"></textarea>
                 </div>
 
                 {status === "success" && (
@@ -180,7 +181,7 @@ export default function Contact() {
                     className="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl flex items-start gap-3 text-red-600 dark:text-red-400"
                   >
                     <AlertCircle size={20} className="shrink-0 mt-0.5" />
-                    <p className="text-sm font-medium">Ocorreu um erro ao enviar a mensagem. Tente novamente.</p>
+                    <p className="text-sm font-medium">Ocorreu um erro ao enviar a mensagem. Tente novamente ou use os canais diretos.</p>
                   </motion.div>
                 )}
 
@@ -189,7 +190,7 @@ export default function Contact() {
                   disabled={status === "submitting"}
                   whileHover={status !== "submitting" ? hoverLift : undefined}
                   whileTap={status !== "submitting" ? tapScale : undefined}
-                  className="w-full py-4 bg-blue-600 hover:bg-blue-700 dark:hover:bg-blue-500 disabled:opacity-70 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-lg shadow-blue-500/20 dark:shadow-blue-500/30 flex items-center justify-center gap-2 transition-colors"
+                  className="w-full py-4 bg-blue-600 hover:bg-blue-700 dark:hover:bg-blue-500 disabled:opacity-70 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-lg shadow-blue-500/20 dark:shadow-blue-500/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
                 >
                   {status === "submitting" ? (
                     <>Enviando... <Loader2 size={16} className="animate-spin" /></>
