@@ -34,7 +34,7 @@ const Footer = memo(function Footer() {
                 <a href="/#experience" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 text-xs font-medium transition-colors">Experiência</a>
               </li>
               <li>
-                <a href="/#projects" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 text-xs font-medium transition-colors">Projetos</a>
+                <Link to="/projects" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 text-xs font-medium transition-colors">Projetos</Link>
               </li>
               <li>
                 <Link to="/certificates" className="text-slate-600 dark:text-slate-400 hover:text-blue-600 text-xs font-medium transition-colors">Certificados</Link>
@@ -59,7 +59,7 @@ const Footer = memo(function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://www.linkedin.com/in/francelino-júnior/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+                <a href="https://www.linkedin.com/in/francelino-j%C3%BAnior/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                   <Linkedin size={14} />
                   <span className="text-xs font-medium">LinkedIn</span>
                 </a>
@@ -86,7 +86,7 @@ const Footer = memo(function Footer() {
             </p>
             <button
               onClick={scrollToTop}
-              className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95"
+              className="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 cursor-pointer"
               aria-label="Voltar ao topo"
             >
               <ArrowUp size={14} />
