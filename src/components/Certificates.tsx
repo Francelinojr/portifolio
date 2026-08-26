@@ -171,8 +171,15 @@ const certificates: Certificate[] = [
     hours: "8h",
     category: "Evento",
     pdf: "/Certificados/CERTIFICADO_PROEX_50840 .pdf",
-  }
-];
+  },
+  {
+    title: "Instalador e Reparador de Redes de Computadores",
+    org: "IFRS",
+    date: "Ago 2026",
+    hours: "200h",
+    category: "Hardware",
+    pdf: "/Certificados/Instalador_e_Reparador_de_Redes_de_Computadores-Certificado_digital_4677642.pdf",
+  },];
 
 export default function Certificates() {
   const [filter, setFilter] = useState('Todos');
