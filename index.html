@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br" class="scroll-smooth">
 
   <head>
     <meta charset="UTF-8" />
@@ -40,9 +40,7 @@
     <!-- ═══ Favicon ═══ -->
     <link rel="icon" type="image/svg+xml" href="/lion.svg" />
 
-    <!-- ═══ Preload LCP critical image (profile photo) ═══
-         O navegador inicia o download antes do bundle React ser parseado,
-         garantindo FCP < 1.2s e eliminando atrasos do LCP.           -->
+    <!-- ═══ Preload LCP critical image (profile photo) ═══ -->
     <link
       rel="preload"
       as="image"
@@ -58,10 +56,7 @@
       fetchpriority="high"
     />
 
-    <!-- ═══ Fonts — non-blocking (media=print trick) ═══
-         O browser baixa o CSS de fontes como "print" (não-bloqueante),
-         e o onload troca para "all", aplicando as fontes sem atrasar FCP/LCP.
-         O <noscript> garante fallback quando JS está desativado.          -->
+    <!-- ═══ Fonts — non-blocking (media=print trick) ═══ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -74,9 +69,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" />
     </noscript>
 
-    <!-- ═══ JSON-LD: Person ═══
-         Identifica o perfil como Data Scientist + Software Engineer de João Pessoa,
-         tornando-o elegível para Knowledge Panel no Google Search. -->
+    <!-- ═══ JSON-LD: Person ═══ -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
