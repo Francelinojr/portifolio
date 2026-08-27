@@ -1,15 +1,14 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, ExternalLink, Clock, BookOpen, School } from 'lucide-react';
+import { Award, ExternalLink, Clock, BookOpen, School, Search, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Certificate } from '@/types';
 
-/** Mapa de meses em pt-BR para número (0-indexed) */
+/** Mapa de meses em pt-BR para timestamp */
 const MONTHS: Record<string, number> = {
   Jan: 0, Fev: 1, Mar: 2, Abr: 3, Mai: 4, Jun: 5,
   Jul: 6, Ago: 7, Set: 8, Out: 9, Nov: 10, Dez: 11,
 };
 
-/** Converte "Mes Ano" → timestamp para ordenação */
 function parseCertDate(dateStr: string): number {
   const parts = dateStr.trim().split(' ');
   const mon = parts[0];
@@ -18,6 +17,14 @@ function parseCertDate(dateStr: string): number {
 }
 
 const RAW_CERTIFICATES: Certificate[] = [
+  {
+    title: "Instalador e Reparador de Redes de Computadores",
+    org: "IFRS - Instituto Federal do Rio Grande do Sul",
+    date: "Ago 2026",
+    hours: "200h",
+    category: "Hardware",
+    pdf: "/Certificados/Instalador_e_Reparador_de_Redes_de_Computadores-Certificado_digital_4677642.pdf",
+  },
   {
     title: "JP TECH: Capacitação para o Futuro Figital",
     org: "UFPB / PROEX",
@@ -186,97 +193,139 @@ const RAW_CERTIFICATES: Certificate[] = [
     category: "Evento",
     pdf: "/Certificados/CERTIFICADO_PROEX_50840 .pdf",
   },
-  {
-    title: "Instalador e Reparador de Redes de Computadores",
-    org: "IFRS",
-    date: "Ago 2026",
-    hours: "200h",
-    category: "Hardware",
-    pdf: "/Certificados/Instalador_e_Reparador_de_Redes_de_Computadores-Certificado_digital_4677642.pdf",
-  },
 ];
 
-/** Certificados ordenados do mais recente para o mais antigo */
-const certificates: Certificate[] = [...RAW_CERTIFICATES].sort(
+// Ordenação decrescente por data
+const ALL_CERTIFICATES = [...RAW_CERTIFICATES].sort(
   (a, b) => parseCertDate(b.date) - parseCertDate(a.date)
 );
 
-/** Ano atual para badge "Novo" */
-const CURRENT_YEAR = new Date().getFullYear();
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  'IA': { bg: 'bg-purple-50 dark:bg-purple-950/40', text: 'text-purple-700 dark:text-purple-300', border: 'border-purple-200 dark:border-purple-800/40' },
+  'Programação': { bg: 'bg-blue-50 dark:bg-blue-950/40', text: 'text-blue-700 dark:text-blue-300', border: 'border-blue-200 dark:border-blue-800/40' },
+  'Hardware': { bg: 'bg-amber-50 dark:bg-amber-950/40', text: 'text-amber-700 dark:text-amber-300', border: 'border-amber-200 dark:border-amber-800/40' },
+  'Acadêmico': { bg: 'bg-indigo-50 dark:bg-indigo-950/40', text: 'text-indigo-700 dark:text-indigo-300', border: 'border-indigo-200 dark:border-indigo-800/40' },
+  'Ferramentas': { bg: 'bg-emerald-50 dark:bg-emerald-950/40', text: 'text-emerald-700 dark:text-emerald-300', border: 'border-emerald-200 dark:border-emerald-800/40' },
+  'Evento': { bg: 'bg-cyan-50 dark:bg-cyan-950/40', text: 'text-cyan-700 dark:text-cyan-300', border: 'border-cyan-200 dark:border-cyan-800/40' },
+};
 
-function isNew(date: string): boolean {
-  const year = parseInt(date.trim().split(' ')[1] ?? '0', 10);
-  return year >= CURRENT_YEAR;
+function isRecent(dateStr: string): boolean {
+  const parts = dateStr.trim().split(' ');
+  const year = parseInt(parts[1] ?? '2000', 10);
+  return year >= 2026;
 }
 
 export default function Certificates() {
   const [filter, setFilter] = useState('Todos');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['Todos', 'Acadêmico', 'Evento', 'Ferramentas', 'Hardware', 'IA', 'Programação'];
+  const categories = ['Todos', 'IA', 'Programação', 'Hardware', 'Acadêmico', 'Ferramentas', 'Evento'];
 
-  /** Contagem por categoria */
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { Todos: certificates.length };
-    for (const cert of certificates) {
+    const counts: Record<string, number> = { Todos: ALL_CERTIFICATES.length };
+    for (const cert of ALL_CERTIFICATES) {
       counts[cert.category] = (counts[cert.category] ?? 0) + 1;
     }
     return counts;
   }, []);
 
   const stats = useMemo(() => ({
-    total: certificates.length,
-    institutions: new Set(certificates.map(c => c.org)).size,
+    total: ALL_CERTIFICATES.length,
+    institutions: new Set(ALL_CERTIFICATES.map((c) => c.org)).size,
+    recentCount: ALL_CERTIFICATES.filter((c) => isRecent(c.date)).length,
   }), []);
 
-  const filteredCerts = useMemo(() =>
-    filter === 'Todos' ? certificates : certificates.filter(c => c.category === filter),
-    [filter]
-  );
+  const filteredCerts = useMemo(() => {
+    return ALL_CERTIFICATES.filter((c) => {
+      const matchesCategory = filter === 'Todos' || c.category === filter;
+      const matchesSearch =
+        searchQuery.trim() === '' ||
+        c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.org.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.category.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  }, [filter, searchQuery]);
 
   return (
-    <section id="certificates" className="py-20 bg-white dark:bg-[#030712] transition-colors scroll-mt-24">
-      <div className="max-w-6xl mx-auto px-4">
+    <section id="certificates" className="py-16 px-4 bg-transparent transition-colors scroll-mt-24">
+      <div className="max-w-6xl mx-auto">
 
-        {/* Dashboard de Estatísticas */}
-        <div className="mb-12">
-          <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4 border-l-4 border-blue-600 pl-4">
-            Certificados
+        {/* Section Header */}
+        <div className="mb-10 text-left">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="p-1.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <Award size={18} />
+            </span>
+            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
+              Educação Continuada
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Certificações & Cursos
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 ml-4">
-            Certificações e cursos que completei ao longo da minha jornada de aprendizado.
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">
+            Histórico completo de cursos, oficinas e especializações com verificação em PDF.
           </p>
+        </div>
 
-          <div className="flex gap-4 mb-10 ml-4">
-            <div className="bg-blue-50 dark:bg-blue-900/20 px-6 py-3 rounded-2xl flex items-center gap-3 border border-blue-100 dark:border-blue-800/50">
-              <div className="bg-white dark:bg-blue-900/40 p-2 rounded-lg shadow-sm">
-                <BookOpen size={20} className="text-blue-600" />
-              </div>
-              <div>
-                <span className="block text-xl font-bold text-blue-600 leading-none">{stats.total}</span>
-                <span className="text-[10px] text-blue-600/70 uppercase font-black tracking-wider">certificados</span>
-              </div>
+        {/* Stats Mini Banner */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="p-4 rounded-2xl glass-panel flex items-center gap-3.5">
+            <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+              <BookOpen size={22} />
             </div>
-            <div className="bg-slate-50 dark:bg-slate-900/50 px-6 py-3 rounded-2xl flex items-center gap-3 border border-slate-100 dark:border-slate-800">
-              <div className="bg-white dark:bg-slate-800 p-2 rounded-lg shadow-sm">
-                <School size={20} className="text-slate-500" />
-              </div>
-              <div>
-                <span className="block text-xl font-bold text-slate-700 dark:text-slate-300 leading-none">{stats.institutions}</span>
-                <span className="text-[10px] text-slate-500 uppercase font-black tracking-wider">instituições</span>
-              </div>
+            <div>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white leading-none">{stats.total}</p>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">Certificados Registrados</p>
             </div>
           </div>
 
-          {/* Filtros de Categoria com contagem */}
-          <div className="flex flex-wrap gap-2 bg-slate-50/50 dark:bg-slate-900/20 p-2 rounded-2xl border border-slate-100 dark:border-slate-800/50">
-            {categories.map(cat => (
+          <div className="p-4 rounded-2xl glass-panel flex items-center gap-3.5">
+            <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+              <School size={22} />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white leading-none">{stats.institutions}</p>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">Instituições Emissoras</p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl glass-panel flex items-center gap-3.5">
+            <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+              <Sparkles size={22} />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white leading-none">{stats.recentCount}</p>
+              <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">Novas Conquistas (2026)</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Search & Category Filter Bar */}
+        <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center mb-8 p-3 rounded-2xl glass-panel">
+          {/* Search Box */}
+          <div className="relative flex-grow max-w-md">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Buscar por curso, instituição (ex: IFRS, Python)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            />
+          </div>
+
+          {/* Category Tabs */}
+          <div className="flex flex-wrap gap-1.5">
+            {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
-                className={`px-5 py-2 rounded-xl text-xs font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   filter === cat
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                    : 'text-slate-500 hover:bg-white dark:hover:bg-slate-800'
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25'
+                    : 'bg-white/60 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/50 dark:border-slate-800/50'
                 }`}
               >
                 {cat} {categoryCounts[cat] !== undefined ? `(${categoryCounts[cat]})` : ''}
@@ -285,63 +334,86 @@ export default function Certificates() {
           </div>
         </div>
 
-        {/* Grade de Certificados */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <AnimatePresence mode='popLayout'>
-            {filteredCerts.map((cert) => (
-              <motion.a
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                key={cert.title}
-                href={cert.pdf}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group bg-white dark:bg-slate-900/50 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-800/50 hover:border-blue-500 transition-all flex flex-col justify-between shadow-sm hover:shadow-xl hover:shadow-blue-500/5 cursor-pointer"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl group-hover:bg-blue-600 transition-colors shadow-inner">
-                      <Award size={24} className="text-blue-600 group-hover:text-white" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {/* Badge "Novo" para certificados do ano atual */}
-                      {isNew(cert.date) && (
-                        <span className="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-100 dark:border-emerald-800/50">
-                          Novo
+        {/* Certificates Grid */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <AnimatePresence mode="popLayout">
+            {filteredCerts.map((cert) => {
+              const catStyle = CATEGORY_COLORS[cert.category] ?? {
+                bg: 'bg-slate-50 dark:bg-slate-900',
+                text: 'text-slate-700 dark:text-slate-300',
+                border: 'border-slate-200 dark:border-slate-800',
+              };
+              const recent = isRecent(cert.date);
+
+              return (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  key={cert.title}
+                  className="group flex flex-col justify-between p-5 rounded-2xl glass-panel card-glow border border-slate-200/80 dark:border-slate-800/80"
+                >
+                  {/* Top Bar: Category Pill + Hours Pill + Novo Badge */}
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${catStyle.bg} ${catStyle.text} ${catStyle.border}`}>
+                        {cert.category}
+                      </span>
+
+                      <div className="flex items-center gap-1.5">
+                        {recent && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500 text-white shadow-sm shadow-emerald-500/30">
+                            <Sparkles size={10} /> NOVO
+                          </span>
+                        )}
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                          <Clock size={10} className="text-blue-500" />
+                          {cert.hours}
                         </span>
-                      )}
-                      <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-100 dark:border-slate-800">
-                        <Clock size={12} className="text-blue-500" /> {cert.hours}
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mb-4">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-blue-600 transition-colors leading-tight">
+                    {/* Title & Organization */}
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug mb-1.5 line-clamp-2">
                       {cert.title}
                     </h3>
-                    <p className="text-sm text-blue-600 dark:text-blue-400 font-bold mb-3 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                      {cert.org}
+                    <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-4">
+                      <School size={13} className="text-indigo-500 shrink-0" />
+                      <span className="truncate">{cert.org}</span>
                     </p>
-                    <span className="inline-block text-[9px] px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 font-black uppercase tracking-tighter border border-slate-200 dark:border-slate-700/50">
-                      {cert.category}
-                    </span>
                   </div>
-                </div>
 
-                <div className="flex justify-between items-center mt-6 pt-5 border-t border-slate-100 dark:border-slate-800/50">
-                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{cert.date}</span>
-                  <div className="flex items-center gap-1.5 text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-tight group-hover:-translate-x-1 transition-transform">
-                    ABRIR PDF <ExternalLink size={14} />
+                  {/* Bottom Action Footer */}
+                  <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800/70 flex items-center justify-between mt-2">
+                    <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
+                      {cert.date}
+                    </span>
+
+                    <a
+                      href={cert.pdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-600 dark:hover:bg-blue-600 text-blue-600 dark:text-blue-400 hover:text-white dark:hover:text-white text-xs font-semibold transition-all border border-blue-200/60 dark:border-blue-900/60 cursor-pointer shadow-xs"
+                    >
+                      Ver PDF
+                      <ExternalLink size={12} />
+                    </a>
                   </div>
-                </div>
-              </motion.a>
-            ))}
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </motion.div>
+
+        {/* Empty Search State */}
+        {filteredCerts.length === 0 && (
+          <div className="text-center py-16 p-8 rounded-2xl glass-panel">
+            <p className="text-base font-semibold text-slate-900 dark:text-white mb-1">Nenhum certificado encontrado</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Tente buscar por outro termo ou selecione a categoria "Todos".</p>
+          </div>
+        )}
+
       </div>
     </section>
   );
