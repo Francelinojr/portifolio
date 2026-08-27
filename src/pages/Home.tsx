@@ -18,11 +18,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#030712] transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-[#030712] ambient-bg transition-colors duration-300">
       <Navbar />
       <Hero />
       
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 pb-16">
         <TechStack />
         <Experience />
         <Projects variant="compact" />
