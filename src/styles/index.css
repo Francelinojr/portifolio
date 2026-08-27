@@ -72,27 +72,26 @@
   /* ─── Dark Mode token overrides ─── */
   .dark {
     --color-bg-base: #030712;
-    --color-bg-subtle: #0f172a;
-    --color-bg-muted: #1e293b;
-    --color-bg-emphasis: #334155;
+    --color-bg-subtle: #0b1120;
+    --color-bg-muted: #111827;
+    --color-bg-emphasis: #1f2937;
 
-    --color-text-primary: #f1f5f9;
+    --color-text-primary: #f8fafc;
     --color-text-secondary: #94a3b8;
     --color-text-muted: #64748b;
-    --color-text-inverse: #0f172a;
+    --color-text-inverse: #030712;
 
-    --color-border: rgb(51 65 85 / 0.5);
-    --color-border-focus: #60a5fa;
+    --color-border: rgb(255 255 255 / 0.08);
+    --color-border-focus: #3b82f6;
 
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
-    --shadow-lg: 0 10px 30px -8px rgb(0 0 0 / 0.6);
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.6);
+    --shadow-lg: 0 12px 32px -8px rgb(0 0 0 / 0.8);
   }
 }
 
 /* ─── 2. BASE LAYER ─── */
 @layer base {
-
   *,
   *::before,
   *::after {
@@ -100,268 +99,74 @@
   }
 
   html {
-    /* Fluid base font: 15px on mobile → 16px on desktop */
-    font-size: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
     scroll-behavior: smooth;
-    text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    tab-size: 4;
   }
 
   body {
-    @apply bg-white dark:bg-[#030712] text-slate-900 dark:text-slate-100;
-    font-family: Inter, Geist, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-    line-height: 1.6;
-    letter-spacing: -0.01em;
-    min-height: 100dvh;
-    /* Prevent layout shift from scrollbar */
-    scrollbar-gutter: stable;
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
   }
 
-  /* Global focus ring — accessible, brand-colored */
-  :focus-visible {
-    outline: 2px solid var(--color-border-focus);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
-  }
-
-  /* Smooth scroll for anchor links */
-  [id] {
-    scroll-margin-top: 4.5rem;
-    /* matches nav height (h-14 + buffer) */
-  }
-
-  /* Media elements */
-  img,
-  video,
-  svg {
-    display: block;
-    max-width: 100%;
-  }
-
-  /* Heading scale — optical tightening */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.025em;
-    @apply text-slate-900 dark:text-white;
-  }
-
-  /* Selection color — on-brand */
-  ::selection {
-    background-color: rgb(37 99 235 / 0.15);
-    color: inherit;
-  }
-
-  /* Scrollbar — subtle, premium feel */
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
   }
-
   ::-webkit-scrollbar-track {
     background: transparent;
   }
-
   ::-webkit-scrollbar-thumb {
-    background: rgb(148 163 184 / 0.4);
-    border-radius: var(--radius-pill);
+    background: #94a3b840;
+    border-radius: 9999px;
   }
-
   ::-webkit-scrollbar-thumb:hover {
-    background: rgb(100 116 139 / 0.6);
-  }
-
-  .dark ::-webkit-scrollbar-thumb {
-    background: rgb(51 65 85 / 0.6);
+    background: #3b82f680;
   }
 }
 
-/* ─── 3. COMPONENT UTILITIES ─── */
-@layer components {
-
-  /* ── Card — base surface ── */
-  .card {
-    @apply bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/60 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-250 overflow-hidden;
-  }
-
-  .card-elevated {
-    @apply card shadow-md hover:shadow-lg;
-  }
-
-  /* ── Section container ── */
-  .section {
-    @apply py-16 px-4;
-  }
-
-  .section-inner {
-    @apply max-w-6xl mx-auto;
-  }
-
-  /* ── Section heading block ── */
-  .section-heading {
-    @apply text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-1;
-  }
-
-  .section-divider {
-    @apply h-[0.2rem] w-14 bg-brand-600 rounded-pill mt-2;
-  }
-
-  /* ── Badge / Tag chip ── */
-  .badge {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 text-[0.625rem] font-bold uppercase tracking-wider rounded-pill bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800/40;
-  }
-
-  .badge-slate {
-    @apply badge bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700/50;
-  }
-
-  /* ── Button — Primary ── */
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-brand transition-all duration-250 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97];
-  }
-
-  /* ── Button — Secondary ── */
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-250 active:scale-[0.97];
-  }
-
-  /* ── Filter pill ── */
-  .filter-pill {
-    @apply px-3 py-1.5 text-[0.625rem] font-bold uppercase tracking-wider rounded-pill border transition-all duration-150;
-  }
-
-  .filter-pill-active {
-    @apply filter-pill bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/50;
-  }
-
-  .filter-pill-default {
-    @apply filter-pill text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/50;
-  }
-
-  /* ── Glass nav ── */
-  .nav-glass {
-    @apply sticky top-0 z-50 bg-white/80 dark:bg-[#030712]/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/50 transition-colors duration-300;
-  }
-
-  /* ── Input field ── */
-  .input {
-    @apply w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-150 outline-none;
-  }
-
-  /* ── Skeleton shimmer loader ── */
-  .skeleton {
-    @apply bg-slate-200 dark:bg-slate-800 rounded-lg animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent;
-    background-size: 200% 100%;
-  }
+/* ─── 3. AMBIENT GLOW & GLASS UTILITIES ─── */
+.ambient-bg {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.06) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.05) 0px, transparent 50%);
 }
 
-/* ── Glassmorphism — Project Card ── */
-.glass-card {
-  @apply bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800/60 shadow-sm hover:shadow-md dark:shadow-dark-card backdrop-blur-none dark:backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-350;
+.dark .ambient-bg {
+  background-image: 
+    radial-gradient(at 20% 10%, rgba(37, 99, 235, 0.12) 0px, transparent 40%),
+    radial-gradient(at 80% 20%, rgba(99, 102, 241, 0.08) 0px, transparent 40%),
+    radial-gradient(at 50% 80%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
 }
 
-/* Gradient border wrapper for dark mode cards */
-.grad-border-dark {
-  position: relative;
-  border-radius: 1rem;
-  /* matches rounded-2xl */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
-.grad-border-dark::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg,
-      rgb(59 130 246 / 0) 0%,
-      rgb(59 130 246 / 0) 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  transition: background 0.35s ease;
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.dark .grad-border-dark::before {
-  background: linear-gradient(135deg,
-      rgb(59 130 246 / 0.35) 0%,
-      rgb(14 165 233 / 0.15) 50%,
-      rgb(59 130 246 / 0.05) 100%);
+.card-glow {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dark .grad-border-dark:hover::before {
-  background: linear-gradient(135deg,
-      rgb(59 130 246 / 0.7) 0%,
-      rgb(99 102 241 / 0.4) 50%,
-      rgb(14 165 233 / 0.3) 100%);
+.card-glow:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.18);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
-/* ── Glassmorphism — Contact Form ── */
-.glass-form {
-  @apply bg-slate-50/60 dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-700/30 backdrop-blur-none dark:backdrop-blur-md shadow-sm dark:shadow-dark-lg rounded-[2rem] transition-all duration-400;
-}
-
-/* ── Glassmorphism — Social link card ── */
-.glass-social {
-  @apply bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/50 dark:backdrop-blur-sm rounded-2xl transition-all duration-250;
-}
-
-.dark .glass-social:hover {
-  border-color: rgb(59 130 246 / 0.4);
-  box-shadow: 0 0 0 1px rgb(59 130 246 / 0.12), 0 4px 16px -4px rgb(59 130 246 / 0.2);
-}
-
-/* ─── 4. UTILITY EXTENSIONS ─── */
-@layer utilities {
-
-  /* Text contrast helpers */
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .text-pretty {
-    text-wrap: pretty;
-  }
-
-  /* Gradient text — brand */
-  .text-gradient-brand {
-    @apply bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent;
-  }
-
-  /* Frosted glass surface */
-  .glass {
-    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md;
-  }
-
-  /* Transition shorthand with brand easing */
-  .transition-smooth {
-    transition: all var(--duration-base) var(--ease-smooth);
-  }
-
-  .transition-spring {
-    transition: all var(--duration-base) var(--ease-spring);
-  }
-
-  /* GPU hint for animated elements */
-  .will-animate {
-    will-change: transform, opacity;
-  }
-
-  /* Prevents FOUC on theme toggle */
-  .no-transition * {
-    transition: none !important;
-  }
-
-  /* 3D hover lift */
-  .hover-lift {
-    @apply transition-all duration-250 hover:-translate-y-0.5 hover:shadow-lg;
-  }
+.dark .card-glow:hover {
+  box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.25);
+  border-color: rgba(96, 165, 250, 0.4);
 }
