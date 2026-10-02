@@ -1,107 +1,164 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Sparkles, Brain, Database, Code2, Layers, Binary, LineChart, Terminal } from 'lucide-react';
+import { ExternalLink, Github, Sparkles, Brain, Code2, Layers, Binary, Terminal } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cardVariant, sectionContainer, hoverLift, tapScale } from '@/lib/motion-variants';
-import { useGithubRepos } from '@/hooks/useGithubRepos';
-
-// Imagens reais existentes na pasta /projects/
-const projectImages: Record<string, string> = {
-  'Breast-Cancer-Wisconsin-Diagnostic-': '/projects/breast-cancer.jpg',
-  'costura-app': '/projects/Costura.jpg',
-  'Geografia_da_Desigualdade': '/projects/desigualdade.jpg',
-  'ProjetoPLN-profissional': '/projects/nlp-odio.jpg',
-  'Analise-Epidemiologica-Entregadores-Aplicativo': '/projects/epidemiologia.jpg',
-  'Analise-de-Dados_da_Netflix': '/projects/netflix.jpg',
-  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': '/projects/suicidio-data.jpg',
-  'Ames-Housing-Predictor': '/projects/ames-housing.jpg',
-  'K-means-em-C-C-Progamacao-Estruturada': '/projects/kmeans-c.jpg',
-};
-
-// Dicionário de títulos humanos elegantes
-const HUMAN_TITLES: Record<string, string> = {
-  'Breast-Cancer-Wisconsin-Diagnostic-': 'Classificação de Câncer de Mama (SVM)',
-  'costura-app': 'Costura App — Gestão de Ateliês',
-  'Geografia_da_Desigualdade': 'Geografia da Desigualdade em STEM',
-  'ProjetoPLN-profissional': 'Detecção de Discurso de Ódio (NLP)',
-  'Analise-Epidemiologica-Entregadores-Aplicativo': 'Análise Epidemiológica de Entregadores',
-  'Analise-de-Dados_da_Netflix': 'Análise de Dados do Catálogo Netflix',
-  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': 'Análise Exploratória: Taxas de Suicídio',
-  'Ames-Housing-Predictor': 'Previsão de Preços de Imóveis (Ames)',
-  'K-means-em-C-C-Progamacao-Estruturada': 'K-Means em C com CSV & Gnuplot',
-  'Aprendizagem-de-maquina': 'Algoritmos de Machine Learning',
-  'Estrutura-de-Dados-com-Grafos-e-arvores': 'Estruturas de Dados: Grafos & Árvores',
-  'Analise-Estatistica-com-Testes-de-hipoteses': 'Análise Estatística & Testes de Hipótese',
-  'Tabela-Hash-com-Encadeamento-e-Tratamento-de-Colisoes': 'Tabela Hash com Encadeamento em C++',
-  'Implementacao-de-Grafo-com-BFS-e-DFS': 'Grafos em C++ (Buscas BFS & DFS)',
-  'Meu-Corre.app': 'Meu Corre — App para Entregadores',
-  'Atividade-cap-2-3-e-4-programa-em-c': 'Exercícios de Programação em C',
-};
-
-// Dicionário de descrições enriquecidas
-const CURATED_DESCRIPTIONS: Record<string, string> = {
-  'Breast-Cancer-Wisconsin-Diagnostic-': 'Pipeline preditivo completo em Python utilizando Support Vector Machines (SVM) com 98,6% de acurácia na identificação de malignidade.',
-  'costura-app': 'Aplicativo mobile multiplataforma desenvolvido em Flutter/Dart com arquitetura limpa MVC e gerenciamento de estado local.',
-  'Geografia_da_Desigualdade': 'Estudo aprofundado com algoritmos de clustering (K-Means) e visualização geoespacial da representatividade feminina em cursos STEM no Brasil.',
-  'ProjetoPLN-profissional': 'Detecção de discurso de ódio em português brasileiro usando embeddings multilíngues (BERTimbau), Sentence Transformers e classificação com Scikit-Learn.',
-  'Analise-Epidemiologica-Entregadores-Aplicativo': 'Análise epidemiológica de acidentes graves com entregadores de aplicativo no Brasil (2020-2025) com dados SINAN/DATASUS. Artigo publicado na SBC.',
-  'Analise-de-Dados_da_Netflix': 'Análise exploratória do catálogo global, tendências de lançamentos, gêneros e distribuição por países com clustering K-Means.',
-  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': 'Tratamento de séries temporais, correlações socioeconômicas e dashboards analíticos de taxas de suicídio por país, sexo e geração (1985–2016).',
-  'Ames-Housing-Predictor': 'Modelo de regressão para previsão de preços de imóveis usando o dataset Ames Housing com engenharia de features e validação cruzada.',
-  'K-means-em-C-C-Progamacao-Estruturada': 'Implementação do algoritmo K-Means do zero em linguagem C com leitura de CSV e visualização de clusters via Gnuplot.',
-  'Aprendizagem-de-maquina': 'Implementação e avaliação comparativa de modelos de classificação, regressão e métricas de desempenho supervisionado.',
-  'Estrutura-de-Dados-com-Grafos-e-arvores': 'Modelagem e percursos em estruturas hierárquicas e redes utilizando C++ de alta performance.',
-  'Analise-Estatistica-com-Testes-de-hipoteses': 'Inferência estatística, testes ANOVA, T-Student e testes não-paramétricos aplicados a conjuntos de dados reais.',
-  'Tabela-Hash-com-Encadeamento-e-Tratamento-de-Colisoes': 'Estrutura de dados avançada com funções de dispersão customizadas e gerenciamento dinâmico de memória.',
-  'Implementacao-de-Grafo-com-BFS-e-DFS': 'Algoritmos de busca em largura e profundidade com cálculo de caminhos mínimos e componentes conexos.',
-  'Meu-Corre.app': 'Aplicativo Python para gestão e apoio a entregadores de aplicativo, com cálculo de rotas e controle de entregas.',
-  'Atividade-cap-2-3-e-4-programa-em-c': 'Exercícios de programação em C sobre lógica, condicionais, loops, vetores, matrizes e fundamentos de algoritmos.',
-};
-
-// Tecnologias principais por projeto
-const CURATED_TAGS: Record<string, string[]> = {
-  'Breast-Cancer-Wisconsin-Diagnostic-': ['Python', 'Scikit-Learn', 'SVM', 'Pandas'],
-  'costura-app': ['Flutter', 'Dart', 'Mobile', 'MVC'],
-  'Geografia_da_Desigualdade': ['Python', 'K-Means', 'Geopandas', 'Data Viz'],
-  'ProjetoPLN-profissional': ['Python', 'NLP', 'BERTimbau', 'HuggingFace'],
-  'Analise-Epidemiologica-Entregadores-Aplicativo': ['Python', 'Pandas', 'DATASUS', 'Matplotlib'],
-  'Analise-de-Dados_da_Netflix': ['Python', 'EDA', 'Matplotlib', 'K-Means'],
-  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': ['Python', 'Pandas', 'Seaborn', 'Saúde Pública'],
-  'Ames-Housing-Predictor': ['Python', 'Regressão', 'Scikit-Learn', 'Feature Eng.'],
-  'K-means-em-C-C-Progamacao-Estruturada': ['C', 'Algoritmos', 'K-Means', 'Gnuplot'],
-  'Aprendizagem-de-maquina': ['Python', 'Scikit-Learn', 'Machine Learning'],
-  'Estrutura-de-Dados-com-Grafos-e-arvores': ['C++', 'Algoritmos', 'Grafos'],
-  'Analise-Estatistica-com-Testes-de-hipoteses': ['Python', 'SciPy', 'Estatística'],
-  'Tabela-Hash-com-Encadeamento-e-Tratamento-de-Colisoes': ['C++', 'Estrutura de Dados'],
-  'Implementacao-de-Grafo-com-BFS-e-DFS': ['C++', 'Grafos', 'BFS/DFS'],
-  'Meu-Corre.app': ['Python', 'App', 'Entregadores'],
-  'Atividade-cap-2-3-e-4-programa-em-c': ['C', 'Algoritmos', 'Programação'],
-};
 
 // Categorias para filtro
 type Category = 'Todos' | 'Data Science & ML' | 'Software & Mobile' | 'Algoritmos & C++';
 
-function getCategory(name: string, lang: string | null): Category {
-  const text = `${name} ${lang ?? ''}`.toLowerCase();
-  if (text.includes('c++') || text.includes('grafo') || text.includes('hash') || text.includes('estrutura') || text.includes('k-means-em-c') || text.includes('atividade-cap')) {
-    return 'Algoritmos & C++';
-  }
-  if (text.includes('flutter') || text.includes('costura') || text.includes('react') || text.includes('dart') || (text.includes('app') && !text.includes('analise') && !text.includes('entregadores'))) {
-    return 'Software & Mobile';
-  }
-  return 'Data Science & ML';
-}
+// ============================================================
+// DADOS ESTÁTICOS DOS PROJETOS — edite aqui para adicionar/remover
+// ============================================================
+const ALL_PROJECTS: Project[] = [
+  {
+    rawName: 'ProjetoPLN-profissional',
+    title: 'Detecção de Discurso de Ódio (NLP)',
+    description: 'Detecção de discurso de ódio em português brasileiro usando embeddings multilíngues (BERTimbau), Sentence Transformers e classificação com Scikit-Learn.',
+    tags: ['Python', 'NLP', 'BERTimbau', 'HuggingFace'],
+    url: 'https://github.com/Francelinojr/ProjetoPLN-profissional',
+    image: '/projects/nlp-odio.jpg',
+    category: 'Data Science & ML',
+    stars: 0,
+    language: 'Jupyter Notebook',
+  },
+  {
+    rawName: 'Breast-Cancer-Wisconsin-Diagnostic-',
+    title: 'Classificação de Câncer de Mama (SVM)',
+    description: 'Pipeline preditivo completo em Python utilizando Support Vector Machines (SVM) com 98,6% de acurácia na identificação de malignidade.',
+    tags: ['Python', 'Scikit-Learn', 'SVM', 'Pandas'],
+    url: 'https://github.com/Francelinojr/Breast-Cancer-Wisconsin-Diagnostic-',
+    image: '/projects/breast-cancer.jpg',
+    category: 'Data Science & ML',
+    stars: 1,
+    language: 'Jupyter Notebook',
+  },
+  {
+    rawName: 'Analise-Epidemiologica-Entregadores-Aplicativo',
+    title: 'Análise Epidemiológica de Entregadores',
+    description: 'Análise epidemiológica de acidentes graves com entregadores de aplicativo no Brasil (2020-2025) com dados SINAN/DATASUS. Artigo publicado na SBC.',
+    tags: ['Python', 'Pandas', 'DATASUS', 'Matplotlib'],
+    url: 'https://github.com/Francelinojr/Analise-Epidemiologica-Entregadores-Aplicativo',
+    image: '/projects/epidemiologia.jpg',
+    category: 'Data Science & ML',
+    stars: 0,
+    language: 'Jupyter Notebook',
+  },
+  {
+    rawName: 'costura-app',
+    title: 'Costura App — Gestão de Ateliês',
+    description: 'Aplicativo mobile multiplataforma desenvolvido em Flutter/Dart com arquitetura limpa MVC e gerenciamento de estado local.',
+    tags: ['Flutter', 'Dart', 'Mobile', 'MVC'],
+    url: 'https://github.com/Francelinojr/costura-app',
+    image: '/projects/Costura.jpg',
+    category: 'Software & Mobile',
+    stars: 1,
+    language: 'Dart',
+  },
+  {
+    rawName: 'Geografia_da_Desigualdade',
+    title: 'Geografia da Desigualdade em STEM',
+    description: 'Estudo aprofundado com algoritmos de clustering (K-Means) e visualização geoespacial da representatividade feminina em cursos STEM no Brasil.',
+    tags: ['Python', 'K-Means', 'Geopandas', 'Data Viz'],
+    url: 'https://github.com/Francelinojr/Geografia_da_Desigualdade',
+    image: '/projects/desigualdade.jpg',
+    category: 'Data Science & ML',
+    stars: 0,
+    language: 'Python',
+  },
+  {
+    rawName: 'Analise-de-Dados_da_Netflix',
+    title: 'Análise de Dados do Catálogo Netflix',
+    description: 'Análise exploratória do catálogo global, tendências de lançamentos, gêneros e distribuição por países com clustering K-Means.',
+    tags: ['Python', 'EDA', 'Matplotlib', 'K-Means'],
+    url: 'https://github.com/Francelinojr/Analise-de-Dados_da_Netflix',
+    image: '/projects/netflix.jpg',
+    category: 'Data Science & ML',
+    stars: 0,
+    language: 'Jupyter Notebook',
+  },
+  {
+    rawName: 'Visao-geral-das-taxas-de-suicidio-1985-a-2016',
+    title: 'Análise Exploratória: Taxas de Suicídio',
+    description: 'Tratamento de séries temporais, correlações socioeconômicas e dashboards analíticos de taxas de suicídio por país, sexo e geração (1985–2016).',
+    tags: ['Python', 'Pandas', 'Seaborn', 'Saúde Pública'],
+    url: 'https://github.com/Francelinojr/Visao-geral-das-taxas-de-suicidio-1985-a-2016',
+    image: '/projects/suicidio-data.jpg',
+    category: 'Data Science & ML',
+    stars: 0,
+    language: 'Jupyter Notebook',
+  },
+  {
+    rawName: 'Ames-Housing-Predictor',
+    title: 'Previsão de Preços de Imóveis (Ames)',
+    description: 'Modelo de regressão para previsão de preços de imóveis usando o dataset Ames Housing com engenharia de features e validação cruzada.',
+    tags: ['Python', 'Regressão', 'Scikit-Learn', 'Feature Eng.'],
+    url: 'https://github.com/Francelinojr/Ames-Housing-Predictor',
+    image: '/projects/ames-housing.jpg',
+    category: 'Data Science & ML',
+    stars: 0,
+    language: 'Python',
+  },
+  {
+    rawName: 'K-means-em-C-C-Progamacao-Estruturada',
+    title: 'K-Means em C com CSV & Gnuplot',
+    description: 'Implementação do algoritmo K-Means do zero em linguagem C com leitura de CSV e visualização de clusters via Gnuplot.',
+    tags: ['C', 'Algoritmos', 'K-Means', 'Gnuplot'],
+    url: 'https://github.com/Francelinojr/K-means-em-C-C-Progamacao-Estruturada',
+    image: '/projects/kmeans-c.jpg',
+    category: 'Algoritmos & C++',
+    stars: 0,
+    language: 'C',
+  },
+  {
+    rawName: 'Aprendizagem-de-maquina',
+    title: 'Algoritmos de Machine Learning',
+    description: 'Implementação e avaliação comparativa de modelos de classificação, regressão e métricas de desempenho supervisionado.',
+    tags: ['Python', 'Scikit-Learn', 'Machine Learning'],
+    url: 'https://github.com/Francelinojr/Aprendizagem-de-maquina',
+    image: undefined,
+    category: 'Data Science & ML',
+    stars: 0,
+    language: 'Jupyter Notebook',
+  },
+  {
+    rawName: 'Meu-Corre.app',
+    title: 'Meu Corre — App para Entregadores',
+    description: 'Aplicativo Python para gestão e apoio a entregadores de aplicativo, com cálculo de rotas e controle de entregas.',
+    tags: ['Python', 'App', 'Entregadores'],
+    url: 'https://github.com/Francelinojr/Meu-Corre.app',
+    image: undefined,
+    category: 'Software & Mobile',
+    stars: 0,
+    language: 'Python',
+  },
+  {
+    rawName: 'Atividade-cap-2-3-e-4-programa-em-c',
+    title: 'Exercícios de Programação em C',
+    description: 'Exercícios de programação em C sobre lógica, condicionais, loops, vetores, matrizes e fundamentos de algoritmos.',
+    tags: ['C', 'Algoritmos', 'Programação'],
+    url: 'https://github.com/Francelinojr/Atividade-cap-2-3-e-4-programa-em-c',
+    image: undefined,
+    category: 'Algoritmos & C++',
+    stars: 0,
+    language: 'C',
+  },
+];
 
-function cleanTitle(rawName: string): string {
-  if (HUMAN_TITLES[rawName]) return HUMAN_TITLES[rawName];
-  return rawName
-    .replace(/[-_]+/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase())
-    .trim();
+interface Project {
+  rawName: string;
+  title: string;
+  description: string;
+  tags: string[];
+  url: string;
+  image: string | undefined;
+  category: Category;
+  stars: number;
+  language: string;
 }
 
 /** Componente de Banner Tecnológico para projetos sem screenshot */
-function TechCardBanner({ name, category, language }: { name: string; category: Category; language?: string }) {
+function TechCardBanner({ category, language }: { category: Category; language?: string }) {
   const theme = useMemo(() => {
     if (category === 'Data Science & ML') {
       return {
@@ -122,7 +179,7 @@ function TechCardBanner({ name, category, language }: { name: string; category: 
     return {
       gradient: 'from-indigo-600/20 via-slate-600/15 to-blue-600/20 dark:from-indigo-900/40 dark:via-slate-800/40 dark:to-blue-900/40',
       icon: <Binary size={32} className="text-indigo-500" />,
-      badge: 'C++ & Algoritmos',
+      badge: 'C & Algoritmos',
       color: 'text-indigo-500 dark:text-indigo-400',
     };
   }, [category]);
@@ -156,95 +213,27 @@ function TechCardBanner({ name, category, language }: { name: string; category: 
 
 export default function Projects({ variant = 'compact' }: { variant?: 'compact' | 'full' }) {
   const [activeFilter, setActiveFilter] = useState<Category>('Todos');
-  const { repos: ghRepos, loading } = useGithubRepos('Francelinojr', 100);
 
-  // Lista de repositórios a serem ignorados (configuração de perfil, repositório de portfólio, etc.)
-  const IGNORED_REPOS = useMemo(() => ['francelinojr', 'portifolio', 'portfolio'], []);
-
-  const projects = useMemo(() => {
-    // Se não carregou ainda do GitHub, usa fallback estático inicial
-    if (!ghRepos) {
-      return [
-        {
-          rawName: 'Breast-Cancer-Wisconsin-Diagnostic-',
-          title: HUMAN_TITLES['Breast-Cancer-Wisconsin-Diagnostic-'],
-          description: CURATED_DESCRIPTIONS['Breast-Cancer-Wisconsin-Diagnostic-'],
-          tags: CURATED_TAGS['Breast-Cancer-Wisconsin-Diagnostic-'],
-          url: 'https://github.com/Francelinojr/Breast-Cancer-Wisconsin-Diagnostic-',
-          image: projectImages['Breast-Cancer-Wisconsin-Diagnostic-'],
-          category: 'Data Science & ML' as Category,
-          stars: 1,
-          language: 'Jupyter Notebook',
-        },
-        {
-          rawName: 'ProjetoPLN-profissional',
-          title: HUMAN_TITLES['ProjetoPLN-profissional'],
-          description: CURATED_DESCRIPTIONS['ProjetoPLN-profissional'],
-          tags: CURATED_TAGS['ProjetoPLN-profissional'],
-          url: 'https://github.com/Francelinojr/ProjetoPLN-profissional',
-          image: projectImages['ProjetoPLN-profissional'],
-          category: 'Data Science & ML' as Category,
-          stars: 0,
-          language: 'Jupyter Notebook',
-        },
-        {
-          rawName: 'costura-app',
-          title: HUMAN_TITLES['costura-app'],
-          description: CURATED_DESCRIPTIONS['costura-app'],
-          tags: CURATED_TAGS['costura-app'],
-          url: 'https://github.com/Francelinojr/costura-app',
-          image: projectImages['costura-app'],
-          category: 'Software & Mobile' as Category,
-          stars: 1,
-          language: 'Dart',
-        },
-      ];
-    }
-
-    // Processa repositórios do GitHub
-    return ghRepos
-      .filter((r) => !IGNORED_REPOS.includes(r.name.toLowerCase()))
-      .map((r) => {
-        const cat = getCategory(r.name, r.language);
-        return {
-          rawName: r.name,
-          title: cleanTitle(r.name),
-          description:
-            CURATED_DESCRIPTIONS[r.name] ??
-            r.description ??
-            'Projeto de tecnologia focado em boas práticas de programação e resolução analítica de problemas.',
-          tags: CURATED_TAGS[r.name] ?? [r.language ?? 'Python', 'GitHub'],
-          url: r.html_url,
-          image: projectImages[r.name],
-          category: cat,
-          stars: r.stargazers_count ?? 0,
-          language: r.language ?? 'Python',
-        };
-      });
-  }, [ghRepos, IGNORED_REPOS]);
-
-  // Filtra projetos para exibição
+  // Projetos exibidos com base no filtro e variante
   const displayedProjects = useMemo(() => {
-    let list = projects;
     if (variant === 'compact') {
-      // No modo compacto, mostra os 3 projetos principais destacados
-      const priority = ['Breast-Cancer-Wisconsin-Diagnostic-', 'ProjetoPLN-profissional', 'costura-app'];
-      const curated = list.filter((p) => priority.includes(p.rawName));
-      return curated.length >= 3 ? curated : list.slice(0, 3);
+      // Home page: mostra os 3 projetos mais impactantes
+      const priority = ['ProjetoPLN-profissional', 'Breast-Cancer-Wisconsin-Diagnostic-', 'costura-app'];
+      const curated = ALL_PROJECTS.filter((p) => priority.includes(p.rawName));
+      return curated.length >= 3 ? curated : ALL_PROJECTS.slice(0, 3);
     }
 
-    if (activeFilter !== 'Todos') {
-      list = list.filter((p) => p.category === activeFilter);
-    }
-    return list;
-  }, [projects, variant, activeFilter]);
+    // Página /projects: aplica filtro de categoria
+    if (activeFilter === 'Todos') return ALL_PROJECTS;
+    return ALL_PROJECTS.filter((p) => p.category === activeFilter);
+  }, [variant, activeFilter]);
 
   const categories: Category[] = ['Todos', 'Data Science & ML', 'Software & Mobile', 'Algoritmos & C++'];
 
   return (
     <section id="projects" className={`py-16 px-4 bg-transparent transition-colors ${variant === 'compact' ? 'scroll-mt-24' : ''}`}>
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
@@ -266,7 +255,7 @@ export default function Projects({ variant = 'compact' }: { variant?: 'compact' 
               to="/projects"
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors group"
             >
-              Ver todos os projetos ({projects.length})
+              Ver todos os projetos ({ALL_PROJECTS.length})
               <ExternalLink size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
           ) : (
@@ -288,20 +277,6 @@ export default function Projects({ variant = 'compact' }: { variant?: 'compact' 
             </div>
           )}
         </div>
-
-        {/* Loading Skeleton */}
-        {loading && variant === 'full' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden glass-panel animate-pulse p-4 space-y-4">
-                <div className="h-36 bg-slate-200 dark:bg-slate-800 rounded-xl" />
-                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
-                <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-full" />
-                <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-2/3" />
-              </div>
-            ))}
-          </div>
-        )}
 
         {/* Grid de Projetos */}
         <motion.div
@@ -327,8 +302,8 @@ export default function Projects({ variant = 'compact' }: { variant?: 'compact' 
                     alt={p.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     onError={(e) => {
-                      // Se a imagem falhar, substitui dinamicamente
-                      (e.currentTarget as HTMLElement).style.display = 'none';
+                      // Se a imagem falhar, esconde e deixa o banner aparecer
+                      (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
@@ -341,13 +316,13 @@ export default function Projects({ variant = 'compact' }: { variant?: 'compact' 
                   </div>
                 </div>
               ) : (
-                <TechCardBanner name={p.rawName} category={p.category} language={p.language} />
+                <TechCardBanner category={p.category} language={p.language} />
               )}
 
               {/* Corpo do Card */}
               <div className="p-5 flex flex-col flex-grow">
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-1">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
                     {p.title}
                   </h3>
                 </div>
