@@ -8,50 +8,74 @@ import { useGithubRepos } from '@/hooks/useGithubRepos';
 // Imagens reais existentes na pasta /projects/
 const projectImages: Record<string, string> = {
   'Breast-Cancer-Wisconsin-Diagnostic-': '/projects/breast-cancer.jpg',
-  'Costura-App': '/projects/Costura.jpg',
-  'Geografia-da-Desigualdade': '/projects/desigualdade.jpg',
+  'costura-app': '/projects/Costura.jpg',
+  'Geografia_da_Desigualdade': '/projects/desigualdade.jpg',
+  'ProjetoPLN-profissional': '/projects/nlp-odio.jpg',
+  'Analise-Epidemiologica-Entregadores-Aplicativo': '/projects/epidemiologia.jpg',
+  'Analise-de-Dados_da_Netflix': '/projects/netflix.jpg',
+  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': '/projects/suicidio-data.jpg',
+  'Ames-Housing-Predictor': '/projects/ames-housing.jpg',
+  'K-means-em-C-C-Progamacao-Estruturada': '/projects/kmeans-c.jpg',
 };
 
 // Dicionário de títulos humanos elegantes
 const HUMAN_TITLES: Record<string, string> = {
   'Breast-Cancer-Wisconsin-Diagnostic-': 'Classificação de Câncer de Mama (SVM)',
-  'Costura-App': 'Costura App — Gestão de Ateliês',
-  'Geografia-da-Desigualdade': 'Geografia da Desigualdade em STEM',
+  'costura-app': 'Costura App — Gestão de Ateliês',
+  'Geografia_da_Desigualdade': 'Geografia da Desigualdade em STEM',
+  'ProjetoPLN-profissional': 'Detecção de Discurso de Ódio (NLP)',
+  'Analise-Epidemiologica-Entregadores-Aplicativo': 'Análise Epidemiológica de Entregadores',
+  'Analise-de-Dados_da_Netflix': 'Análise de Dados do Catálogo Netflix',
+  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': 'Análise Exploratória: Taxas de Suicídio',
+  'Ames-Housing-Predictor': 'Previsão de Preços de Imóveis (Ames)',
+  'K-means-em-C-C-Progamacao-Estruturada': 'K-Means em C com CSV & Gnuplot',
   'Aprendizagem-de-maquina': 'Algoritmos de Machine Learning',
   'Estrutura-de-Dados-com-Grafos-e-arvores': 'Estruturas de Dados: Grafos & Árvores',
   'Analise-Estatistica-com-Testes-de-hipoteses': 'Análise Estatística & Testes de Hipótese',
   'Tabela-Hash-com-Encadeamento-e-Tratamento-de-Colisoes': 'Tabela Hash com Encadeamento em C++',
   'Implementacao-de-Grafo-com-BFS-e-DFS': 'Grafos em C++ (Buscas BFS & DFS)',
-  'Visao-geral-das-taxas-de-suicidio-no-Brasil': 'Análise Exploratória: Dados Epidemiológicos',
-  'Analise-de-Dados_da_Netflix': 'Análise de Dados do Catálogo Netflix',
+  'Meu-Corre.app': 'Meu Corre — App para Entregadores',
+  'Atividade-cap-2-3-e-4-programa-em-c': 'Exercícios de Programação em C',
 };
 
 // Dicionário de descrições enriquecidas
 const CURATED_DESCRIPTIONS: Record<string, string> = {
   'Breast-Cancer-Wisconsin-Diagnostic-': 'Pipeline preditivo completo em Python utilizando Support Vector Machines (SVM) com 98,6% de acurácia na identificação de malignidade.',
-  'Costura-App': 'Aplicativo mobile multiplataforma desenvolvido em Flutter/Dart com arquitetura limpa MVC e gerenciamento de estado local.',
-  'Geografia-da-Desigualdade': 'Estudo aprofundado com algoritmos de clustering (K-Means) e visualização geoespacial da representatividade feminina na área tech.',
+  'costura-app': 'Aplicativo mobile multiplataforma desenvolvido em Flutter/Dart com arquitetura limpa MVC e gerenciamento de estado local.',
+  'Geografia_da_Desigualdade': 'Estudo aprofundado com algoritmos de clustering (K-Means) e visualização geoespacial da representatividade feminina em cursos STEM no Brasil.',
+  'ProjetoPLN-profissional': 'Detecção de discurso de ódio em português brasileiro usando embeddings multilíngues (BERTimbau), Sentence Transformers e classificação com Scikit-Learn.',
+  'Analise-Epidemiologica-Entregadores-Aplicativo': 'Análise epidemiológica de acidentes graves com entregadores de aplicativo no Brasil (2020-2025) com dados SINAN/DATASUS. Artigo publicado na SBC.',
+  'Analise-de-Dados_da_Netflix': 'Análise exploratória do catálogo global, tendências de lançamentos, gêneros e distribuição por países com clustering K-Means.',
+  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': 'Tratamento de séries temporais, correlações socioeconômicas e dashboards analíticos de taxas de suicídio por país, sexo e geração (1985–2016).',
+  'Ames-Housing-Predictor': 'Modelo de regressão para previsão de preços de imóveis usando o dataset Ames Housing com engenharia de features e validação cruzada.',
+  'K-means-em-C-C-Progamacao-Estruturada': 'Implementação do algoritmo K-Means do zero em linguagem C com leitura de CSV e visualização de clusters via Gnuplot.',
   'Aprendizagem-de-maquina': 'Implementação e avaliação comparativa de modelos de classificação, regressão e métricas de desempenho supervisionado.',
   'Estrutura-de-Dados-com-Grafos-e-arvores': 'Modelagem e percursos em estruturas hierárquicas e redes utilizando C++ de alta performance.',
   'Analise-Estatistica-com-Testes-de-hipoteses': 'Inferência estatística, testes ANOVA, T-Student e testes não-paramétricos aplicados a conjuntos de dados reais.',
   'Tabela-Hash-com-Encadeamento-e-Tratamento-de-Colisoes': 'Estrutura de dados avançada com funções de dispersão customizadas e gerenciamento dinâmico de memória.',
   'Implementacao-de-Grafo-com-BFS-e-DFS': 'Algoritmos de busca em largura e profundidade com cálculo de caminhos mínimos e componentes conexos.',
-  'Visao-geral-das-taxas-de-suicidio-no-Brasil': 'Tratamento de séries temporais, correlações socioeconômicas e dashboards analíticos em Python/Pandas.',
-  'Analise-de-Dados_da_Netflix': 'Análise exploratória do catálogo global, tendências de lançamentos, gêneros e distribuição por países.',
+  'Meu-Corre.app': 'Aplicativo Python para gestão e apoio a entregadores de aplicativo, com cálculo de rotas e controle de entregas.',
+  'Atividade-cap-2-3-e-4-programa-em-c': 'Exercícios de programação em C sobre lógica, condicionais, loops, vetores, matrizes e fundamentos de algoritmos.',
 };
 
 // Tecnologias principais por projeto
 const CURATED_TAGS: Record<string, string[]> = {
   'Breast-Cancer-Wisconsin-Diagnostic-': ['Python', 'Scikit-Learn', 'SVM', 'Pandas'],
-  'Costura-App': ['Flutter', 'Dart', 'Mobile', 'MVC'],
-  'Geografia-da-Desigualdade': ['Python', 'K-Means', 'Geopandas', 'Data Viz'],
+  'costura-app': ['Flutter', 'Dart', 'Mobile', 'MVC'],
+  'Geografia_da_Desigualdade': ['Python', 'K-Means', 'Geopandas', 'Data Viz'],
+  'ProjetoPLN-profissional': ['Python', 'NLP', 'BERTimbau', 'HuggingFace'],
+  'Analise-Epidemiologica-Entregadores-Aplicativo': ['Python', 'Pandas', 'DATASUS', 'Matplotlib'],
+  'Analise-de-Dados_da_Netflix': ['Python', 'EDA', 'Matplotlib', 'K-Means'],
+  'Visao-geral-das-taxas-de-suicidio-1985-a-2016': ['Python', 'Pandas', 'Seaborn', 'Saúde Pública'],
+  'Ames-Housing-Predictor': ['Python', 'Regressão', 'Scikit-Learn', 'Feature Eng.'],
+  'K-means-em-C-C-Progamacao-Estruturada': ['C', 'Algoritmos', 'K-Means', 'Gnuplot'],
   'Aprendizagem-de-maquina': ['Python', 'Scikit-Learn', 'Machine Learning'],
   'Estrutura-de-Dados-com-Grafos-e-arvores': ['C++', 'Algoritmos', 'Grafos'],
   'Analise-Estatistica-com-Testes-de-hipoteses': ['Python', 'SciPy', 'Estatística'],
   'Tabela-Hash-com-Encadeamento-e-Tratamento-de-Colisoes': ['C++', 'Estrutura de Dados'],
   'Implementacao-de-Grafo-com-BFS-e-DFS': ['C++', 'Grafos', 'BFS/DFS'],
-  'Visao-geral-das-taxas-de-suicidio-no-Brasil': ['Python', 'Pandas', 'Seaborn'],
-  'Analise-de-Dados_da_Netflix': ['Python', 'EDA', 'Matplotlib'],
+  'Meu-Corre.app': ['Python', 'App', 'Entregadores'],
+  'Atividade-cap-2-3-e-4-programa-em-c': ['C', 'Algoritmos', 'Programação'],
 };
 
 // Categorias para filtro
@@ -59,10 +83,10 @@ type Category = 'Todos' | 'Data Science & ML' | 'Software & Mobile' | 'Algoritmo
 
 function getCategory(name: string, lang: string | null): Category {
   const text = `${name} ${lang ?? ''}`.toLowerCase();
-  if (text.includes('c++') || text.includes('grafo') || text.includes('hash') || text.includes('estrutura')) {
+  if (text.includes('c++') || text.includes('grafo') || text.includes('hash') || text.includes('estrutura') || text.includes('k-means-em-c') || text.includes('atividade-cap')) {
     return 'Algoritmos & C++';
   }
-  if (text.includes('flutter') || text.includes('costura') || text.includes('react') || text.includes('dart') || text.includes('app')) {
+  if (text.includes('flutter') || text.includes('costura') || text.includes('react') || text.includes('dart') || (text.includes('app') && !text.includes('analise') && !text.includes('entregadores'))) {
     return 'Software & Mobile';
   }
   return 'Data Science & ML';
@@ -149,30 +173,30 @@ export default function Projects({ variant = 'compact' }: { variant?: 'compact' 
           url: 'https://github.com/Francelinojr/Breast-Cancer-Wisconsin-Diagnostic-',
           image: projectImages['Breast-Cancer-Wisconsin-Diagnostic-'],
           category: 'Data Science & ML' as Category,
+          stars: 1,
+          language: 'Jupyter Notebook',
+        },
+        {
+          rawName: 'ProjetoPLN-profissional',
+          title: HUMAN_TITLES['ProjetoPLN-profissional'],
+          description: CURATED_DESCRIPTIONS['ProjetoPLN-profissional'],
+          tags: CURATED_TAGS['ProjetoPLN-profissional'],
+          url: 'https://github.com/Francelinojr/ProjetoPLN-profissional',
+          image: projectImages['ProjetoPLN-profissional'],
+          category: 'Data Science & ML' as Category,
           stars: 0,
           language: 'Jupyter Notebook',
         },
         {
-          rawName: 'Costura-App',
-          title: HUMAN_TITLES['Costura-App'],
-          description: CURATED_DESCRIPTIONS['Costura-App'],
-          tags: CURATED_TAGS['Costura-App'],
-          url: 'https://github.com/Francelinojr/Costura-App',
-          image: projectImages['Costura-App'],
+          rawName: 'costura-app',
+          title: HUMAN_TITLES['costura-app'],
+          description: CURATED_DESCRIPTIONS['costura-app'],
+          tags: CURATED_TAGS['costura-app'],
+          url: 'https://github.com/Francelinojr/costura-app',
+          image: projectImages['costura-app'],
           category: 'Software & Mobile' as Category,
-          stars: 0,
+          stars: 1,
           language: 'Dart',
-        },
-        {
-          rawName: 'Geografia-da-Desigualdade',
-          title: HUMAN_TITLES['Geografia-da-Desigualdade'],
-          description: CURATED_DESCRIPTIONS['Geografia-da-Desigualdade'],
-          tags: CURATED_TAGS['Geografia-da-Desigualdade'],
-          url: 'https://github.com/Francelinojr/Geografia-da-Desigualdade',
-          image: projectImages['Geografia-da-Desigualdade'],
-          category: 'Data Science & ML' as Category,
-          stars: 0,
-          language: 'Python',
         },
       ];
     }
@@ -204,9 +228,9 @@ export default function Projects({ variant = 'compact' }: { variant?: 'compact' 
     let list = projects;
     if (variant === 'compact') {
       // No modo compacto, mostra os 3 projetos principais destacados
-      const priority = ['Breast-Cancer-Wisconsin-Diagnostic-', 'Costura-App', 'Geografia-da-Desigualdade'];
+      const priority = ['Breast-Cancer-Wisconsin-Diagnostic-', 'ProjetoPLN-profissional', 'costura-app'];
       const curated = list.filter((p) => priority.includes(p.rawName));
-      return curated.length ? curated : list.slice(0, 3);
+      return curated.length >= 3 ? curated : list.slice(0, 3);
     }
 
     if (activeFilter !== 'Todos') {
